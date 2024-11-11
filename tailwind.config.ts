@@ -21,6 +21,10 @@ export default {
         background: "rgba(10, 7, 6, 1)",
         primary: "rgba(235, 94, 40, 1)",
       },
+      backgroundImage: {
+        "gradient-border":
+          "linear-gradient(to right, rgba(235, 94, 40, 1), rgba(66, 109, 98, 1))",
+      },
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports

@@ -11,11 +11,17 @@ export function NavbarWrapper() {
   if (pathname === "/" || pathname === "/sign-in") return null;
 
   return (
-    <nav className="border-primary flex h-20 items-center justify-between border-b px-12 py-4">
+    <nav className="relative flex h-20 items-center justify-between px-12 py-4 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gradient-to-r after:from-primary after:to-secondary">
       <div className="w-[164px]">
         <NexaSVG />
       </div>
-      <Input placeholder="Search" className="border-primary w-96" />
+      <div className="relative w-96">
+        <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
+        <Input
+          placeholder="Search"
+          className="relative m-[1px] w-[calc(100%-2px)] bg-background"
+        />
+      </div>
       <div className="flex w-[164px] items-center justify-end gap-4">
         <HomeIconSVG />
         {/* <SearchIconSVG /> */}
