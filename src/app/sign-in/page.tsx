@@ -21,12 +21,12 @@ const SignInPage = () => {
       <div className="flex gap-4">
         <SignInButton forceRedirectUrl={"/feed"}>
           <button className="bg-primary text-background hover:bg-primary/80 rounded-md px-8 py-4 text-xl font-semibold">
-            Sign In
+            Logare
           </button>
         </SignInButton>
         <SignUpButton forceRedirectUrl={"/feed"}>
           <button className="bg-primary text-background hover:bg-primary/80 rounded-md px-8 py-4 text-xl font-semibold">
-            Sign Up
+            Cont Nou
           </button>
         </SignUpButton>
       </div>

@@ -6,8 +6,9 @@ import { Input } from "~/components/ui/input";
 
 export function NavbarWrapper() {
   const pathname = usePathname();
+  console.log(pathname);
 
-  if (pathname === "/" || "/sign-in") return null;
+  if (pathname === "/" || pathname === "/sign-in") return null;
 
   return (
     <nav className="border-primary flex h-20 items-center justify-between border-b px-12 py-4">
