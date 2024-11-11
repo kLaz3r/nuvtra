@@ -1,20 +1,20 @@
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 const SignInPage = () => {
   return (
-    <div className="bg-background text-text relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-clip">
-      <div className="overflow-hiddenbottom-0 absolute right-0 h-[1024px] w-[1024px] translate-x-48 translate-y-48 opacity-20">
+    <div className="bg-background text-text relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-clip px-12">
+      <div className="overflow-hiddenbottom-0 absolute right-0 h-[512px] w-[512px] translate-x-48 translate-y-64 opacity-20 md:h-[1024px] md:w-[1024px]">
         <NexaSVG />
       </div>
-      <h1 className="text-6xl font-bold">
+      <h1 className="text-center text-5xl font-bold md:text-6xl">
         Bine ai venit pe <span className="text-primary font-black">NEXA</span>!
       </h1>
       <div>
-        <p className="max-w-2xl text-center text-xl">
+        <p className="max-w-2xl text-center text-lg md:text-xl">
           Conectează-te cu oameni care împărtășesc aceleași interese, explorează
           idei noi și inspiră-te din comunitatea noastră globală.
         </p>
         <br />
-        <p className="max-w-2xl text-center text-xl">
+        <p className="max-w-2xl text-center text-lg md:text-xl">
           Intră în contul tău sau creează unul nou pentru a începe.
         </p>
       </div>

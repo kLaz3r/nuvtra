@@ -18,7 +18,7 @@ export function NavbarWrapper() {
       <Input placeholder="Search" className="border-primary w-96" />
       <div className="flex w-[164px] items-center justify-end gap-4">
         <HomeIconSVG />
-        <SearchIconSVG />
+        {/* <SearchIconSVG /> */}
         <BellIconSVG />
         <UserButton />
       </div>
