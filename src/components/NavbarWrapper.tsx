@@ -12,9 +12,11 @@ export function NavbarWrapper() {
 
   return (
     <nav className="border-primary flex h-20 items-center justify-between border-b px-12 py-4">
-      <NexaSVG />
+      <div className="w-[164px]">
+        <NexaSVG />
+      </div>
       <Input placeholder="Search" className="border-primary w-96" />
-      <div className="flex items-center gap-4">
+      <div className="flex w-[164px] items-center justify-end gap-4">
         <HomeIconSVG />
         <SearchIconSVG />
         <BellIconSVG />
