@@ -3,6 +3,7 @@
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Input } from "~/components/ui/input";
+import { cn } from "~/lib/utils";
 
 export function NavbarWrapper() {
   const pathname = usePathname();
@@ -11,26 +12,35 @@ export function NavbarWrapper() {
   if (pathname === "/" || pathname === "/sign-in") return null;
 
   return (
-    <nav className="relative flex h-20 items-center justify-between px-12 py-4 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gradient-to-r after:from-primary after:to-secondary">
-      <div className="w-[164px]">
-        <NexaSVG />
+    <nav className="relative flex h-32 flex-col items-center justify-center gap-4 px-12 py-4 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gradient-to-r after:from-primary after:to-secondary md:h-20">
+      <div className="flex w-full justify-between">
+        <div className="w-[164px]">
+          <NexaSVG />
+        </div>
+        <SearchInput mediaQuery="hidden md:flex" />
+        <div className="flex w-[164px] items-center justify-end gap-4">
+          <HomeIconSVG />
+          {/* <SearchIconSVG /> */}
+          <BellIconSVG />
+          <UserButton />
+        </div>
       </div>
-      <div className="relative w-96">
-        <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
-        <Input
-          placeholder="Search"
-          className="relative m-[1px] w-[calc(100%-2px)] bg-background"
-        />
-      </div>
-      <div className="flex w-[164px] items-center justify-end gap-4">
-        <HomeIconSVG />
-        {/* <SearchIconSVG /> */}
-        <BellIconSVG />
-        <UserButton />
-      </div>
+      <SearchInput mediaQuery="md:hidden" />
     </nav>
   );
 }
+
+const SearchInput = ({ mediaQuery }: { mediaQuery: string }) => {
+  return (
+    <div className={cn("relative w-full md:w-96", mediaQuery)}>
+      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
+      <Input
+        placeholder="Search"
+        className="relative m-[1px] w-[calc(100%-2px)] bg-background"
+      />
+    </div>
+  );
+};
 
 const HomeIconSVG = () => {
   return (

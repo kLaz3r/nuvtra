@@ -3,7 +3,7 @@ import { cn } from "~/lib/utils";
 
 export const Post = () => {
   return (
-    <div className="shadow-post flex min-h-96 w-96 flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 md:w-[650px]">
+    <div className="shadow-post flex min-h-96 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 md:max-w-[650px]">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar>
