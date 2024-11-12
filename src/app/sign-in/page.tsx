@@ -1,12 +1,12 @@
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 const SignInPage = () => {
   return (
-    <div className="bg-background text-text relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-clip px-12">
-      <div className="overflow-hiddenbottom-0 absolute right-0 h-[512px] w-[512px] translate-x-48 translate-y-64 opacity-20 md:h-[1024px] md:w-[1024px]">
+    <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-clip px-12 text-text">
+      <div className="absolute right-0 -z-10 h-[512px] w-[512px] translate-x-48 translate-y-64 cursor-none overflow-hidden opacity-20 md:h-[1024px] md:w-[1024px]">
         <NexaSVG />
       </div>
       <h1 className="text-center text-5xl font-bold md:text-6xl">
-        Bine ai venit pe <span className="text-primary font-black">NEXA</span>!
+        Bine ai venit pe <span className="font-black text-primary">NEXA</span>!
       </h1>
       <div>
         <p className="max-w-2xl text-center text-lg md:text-xl">
@@ -20,12 +20,12 @@ const SignInPage = () => {
       </div>
       <div className="flex gap-4">
         <SignInButton forceRedirectUrl={"/feed"}>
-          <button className="bg-primary text-background hover:bg-primary/80 rounded-md px-8 py-4 text-xl font-semibold">
+          <button className="rounded-md bg-primary px-8 py-4 text-xl font-semibold text-background hover:bg-primary/80 active:bg-primary/80">
             Logare
           </button>
         </SignInButton>
         <SignUpButton forceRedirectUrl={"/feed"}>
-          <button className="bg-primary text-background hover:bg-primary/80 rounded-md px-8 py-4 text-xl font-semibold">
+          <button className="rounded-md bg-primary px-8 py-4 text-xl font-semibold text-background hover:bg-primary/80 active:bg-primary/80">
             Cont Nou
           </button>
         </SignUpButton>
