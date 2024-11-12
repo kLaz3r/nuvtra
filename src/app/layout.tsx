@@ -1,3 +1,4 @@
+import { dark } from "@clerk/themes";
 import "~/styles/globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
@@ -14,7 +15,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        variables: {
+          colorPrimary: "#EB5E28",
+          colorBackground: "#0A0706",
+          colorInputBackground: "#0A0706",
+          colorText: "#FFFFFF",
+          colorTextSecondary: "#FFFFFF",
+        },
+      }}
+    >
       <html lang="en">
         <body className="bg-background text-text">
           <NavbarWrapper />
