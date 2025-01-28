@@ -24,7 +24,7 @@ const SignInPage = () => {
             Logare
           </button>
         </SignInButton>
-        <SignUpButton forceRedirectUrl={"/feed"}>
+        <SignUpButton forceRedirectUrl={"/sign-up"}>
           <button className="rounded-md bg-primary px-8 py-4 text-xl font-semibold text-background hover:bg-primary/80 active:bg-primary/80">
             Cont Nou
           </button>
