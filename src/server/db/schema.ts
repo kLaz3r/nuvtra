@@ -5,6 +5,7 @@ import {
   pgTableCreator,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -24,7 +25,10 @@ export const users = pgTable("user", {
 });
 
 export const posts = pgTable("post", {
-  id: varchar("id", { length: 256 }).primaryKey().notNull().unique(),
+  id: uuid("id")
+    .primaryKey()
+    .unique()
+    .default(sql`gen_random_uuid()`),
   content: text("content").notNull(),
   imageUrl: varchar("image_url", { length: 512 }),
   timestamp: timestamp("timestamp", { withTimezone: true })
@@ -36,12 +40,15 @@ export const posts = pgTable("post", {
 });
 
 export const comments = pgTable("comment", {
-  id: varchar("id", { length: 256 }).primaryKey().notNull().unique(),
+  id: uuid("id")
+    .primaryKey()
+    .unique()
+    .default(sql`gen_random_uuid()`),
   content: text("content").notNull(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  postId: varchar("post_id", { length: 256 })
+  postId: uuid("post_id")
     .notNull()
     .references(() => posts.id, { onDelete: "cascade" }),
   authorId: varchar("author_id", { length: 256 })
@@ -50,11 +57,14 @@ export const comments = pgTable("comment", {
 });
 
 export const likes = pgTable("like", {
-  id: varchar("id", { length: 256 }).primaryKey().notNull().unique(),
+  id: uuid("id")
+    .primaryKey()
+    .unique()
+    .default(sql`gen_random_uuid()`),
   userId: varchar("user_id", { length: 256 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  postId: varchar("post_id", { length: 256 })
+  postId: uuid("post_id")
     .notNull()
     .references(() => posts.id, { onDelete: "cascade" }),
 });
@@ -66,7 +76,10 @@ export const notificationTypeEnum = pgEnum("notification_type", [
 ]);
 
 export const notifications = pgTable("notification", {
-  id: varchar("id", { length: 256 }).primaryKey().notNull().unique(),
+  id: uuid("id")
+    .primaryKey()
+    .unique()
+    .default(sql`gen_random_uuid()`),
   type: notificationTypeEnum("type").notNull(),
   message: text("message").notNull(),
   userId: varchar("user_id", { length: 256 })
@@ -82,7 +95,10 @@ export const notifications = pgTable("notification", {
 });
 
 export const follows = pgTable("follow", {
-  id: varchar("id", { length: 256 }).primaryKey().notNull().unique(),
+  id: uuid("id")
+    .primaryKey()
+    .unique()
+    .default(sql`gen_random_uuid()`),
   followerId: varchar("follower_id", { length: 256 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
