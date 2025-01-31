@@ -1,23 +1,67 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Post } from "~/components/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { UploadButton, useUploadThing } from "~/utils/uploadthing";
+import { UploadButton } from "~/utils/uploadthing";
+
+export type PostProps = {
+  id: string;
+  content: string;
+  imageUrl: string;
+  timestamp: string;
+  authorId: string;
+  comments: [];
+  likes: [];
+  author: User;
+};
 
 const FeedPage = () => {
   const { user } = useUser();
-  const router = useRouter();
+  const [posts, setPosts] = useState<PostProps[]>([]);
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const response = await fetch("/api/posts/get", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to get data");
+        }
+
+        console.log("data fetch gud");
+        const data = (await response.json()) as Post[];
+        setPosts(data);
+      } catch (error) {
+        console.error("Error geting data:", error);
+      }
+    }
+    void getData();
+  }, [user]);
+  if (posts.length === 0) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-2 py-6 text-text">
+        <span className="loader"></span>
+      </div>
+    );
+  }
   if (!user) {
     return null;
   }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-2 py-6 text-text">
       <CreatePost />
-      <Post />
-      <Post />
-      <Post />
+      {posts.map((post) => (
+        <Post key={post.id} post={post} />
+      ))}
     </div>
   );
 };
@@ -94,7 +138,8 @@ const CreatePost = () => {
         throw new Error("Failed to create post");
       }
 
-      console.log("post creted successfully");
+      console.log("post created successfully");
+      window.location.reload();
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -130,16 +175,30 @@ const CreatePost = () => {
           onChange={handleChange("bodyText")}
           className="h-32 w-full rounded-lg border border-primary bg-background p-4 text-text outline-none"
         ></textarea>
+        {formData.image && (
+          <div className="relative h-96 w-full">
+            <Image
+              src={formData.image}
+              alt="post image"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        )}
         <div className="flex w-full items-center justify-between">
-          <UploadButton
-            endpoint={"imageUploader"}
-            onClientUploadComplete={(res): void => {
-              setFormData((prev) => ({
-                ...prev,
-                image: res[0]!.url,
-              }));
-            }}
-          />
+          {formData.image === null ? (
+            <UploadButton
+              endpoint={"imageUploader"}
+              onClientUploadComplete={(res): void => {
+                setFormData((prev) => ({
+                  ...prev,
+                  image: res[0]!.url,
+                }));
+              }}
+            />
+          ) : (
+            <div></div>
+          )}
           <button
             type="submit"
             className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 font-bold text-background"

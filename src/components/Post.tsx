@@ -1,25 +1,54 @@
+import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { cn } from "~/lib/utils";
 
-export const Post = () => {
+type User = {
+  id: string;
+  username: string;
+  email: string;
+  bio: string;
+  createdAt: string;
+  location: string;
+  avatar: string | null;
+};
+
+export type Post = {
+  id: string;
+  content: string;
+  imageUrl: string;
+  timestamp: string;
+  authorId: string;
+  comments: [];
+  likes: [];
+  author: User;
+};
+
+export const Post = ({ post }: { post: Post }) => {
+  console.log(post);
+
   return (
-    <div className="shadow-post flex min-h-96 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 md:max-w-[650px]">
+    <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={post.author.avatar ?? ""} />
+            <AvatarFallback>{post.author.username[0]}</AvatarFallback>
           </Avatar>
-          <h2 className="text-lg font-semibold">John Doe</h2>
+          <h2 className="text-lg font-semibold">{post.author.username}</h2>
         </div>
         <InteractionButtons mediaQuery="hidden md:flex" />
       </div>
-      <p className="">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at
-        nunc venenatis, euismod leo a, ultricies turpis. Nunc hendrerit velit
-        eget dolor accumsan elementum vitae a dui.
-      </p>
-      <div className="h-64 w-full bg-accent"></div>
+      <p className="">{post.content}</p>
+      {post.imageUrl && (
+        <div className="relative h-96 w-full">
+          <Image
+            src={post.imageUrl}
+            alt="post image"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
+      )}
       <InteractionButtons mediaQuery="md:hidden" />
     </div>
   );

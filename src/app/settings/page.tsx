@@ -1,19 +1,75 @@
 "use client";
 
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/dist/client/components/navigation";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 
+type FormData = {
+  id: string;
+  username: string;
+  email: string;
+  avatar: string | null;
+  location: string;
+  bio: string;
+};
+
 const SettingsPage = () => {
-  const [formData, setFormData] = useState({
+  const router = useRouter();
+  const { user } = useUser();
+  const [formData, setFormData] = useState<FormData>({
+    id: "",
     username: "",
     email: "",
-    locatie: "",
+    location: "",
     bio: "",
+    avatar: null,
   });
+
+  useEffect(() => {
+    async function getData() {
+      if (!user) return;
+
+      try {
+        const response = await fetch("/api/users/get", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to get user data");
+        }
+
+        const userData = (await response.json()) as {
+          username: string;
+          email: string;
+          location: string;
+          bio: string;
+          avatar: string;
+        };
+        setFormData({
+          id: user.id,
+          username: userData.username ?? "",
+          email: userData.email ?? "",
+          location: userData.location ?? "Romania",
+          bio: userData.bio ?? "",
+          avatar: userData.avatar ?? null,
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+    void getData();
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +88,7 @@ const SettingsPage = () => {
 
       // Optional: Add success notification
       console.log("User updated successfully");
+      router.push("/feed");
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -51,15 +108,19 @@ const SettingsPage = () => {
       <div className="mb-6 flex items-center gap-4 md:gap-6">
         <div className="relative h-28 w-28 md:h-48 md:w-48">
           <Image
-            src="https://github.com/shadcn.png"
+            src={formData.avatar ?? null}
             alt="avatar"
             fill
             className="rounded-full"
           />
         </div>
         <div className="flex flex-col items-start justify-start gap-2">
-          <h1 className="text-4xl font-semibold md:text-6xl">John Doe</h1>
-          <h3 className="text-lg font-normal md:text-2xl">Romania</h3>
+          <h1 className="text-4xl font-semibold md:text-6xl">
+            {formData.username}
+          </h1>
+          <h3 className="text-lg font-normal md:text-2xl">
+            {formData.location}
+          </h3>
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             <h3 className="text-lg font-normal">
               Urmaritori <span className="font-semibold text-primary">100</span>
@@ -98,8 +159,8 @@ const SettingsPage = () => {
           <StyledInput
             placeholder="Locatie"
             className="w-full"
-            value={formData.locatie}
-            onChange={handleChange("locatie")}
+            value={formData.location}
+            onChange={handleChange("location")}
           />
         </div>
         <div className="flex w-full max-w-96 flex-col items-start justify-start gap-2">
