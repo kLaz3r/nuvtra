@@ -51,13 +51,13 @@ export const Post = ({ post }: { post: Post }) => {
   return (
     <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
       <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-4">
+        <a href={`/user/${post.authorId}`} className="flex items-center gap-4">
           <Avatar>
             <AvatarImage src={post.author.avatar ?? ""} />
             <AvatarFallback>{post.author.username[0]}</AvatarFallback>
           </Avatar>
           <h2 className="text-lg font-semibold">{post.author.username}</h2>
-        </div>
+        </a>
         <InteractionButtons
           likes={post.likes ?? []}
           postId={post.id}
