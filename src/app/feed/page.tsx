@@ -1,7 +1,6 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Post } from "~/components/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";

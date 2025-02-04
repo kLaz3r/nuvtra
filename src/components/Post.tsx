@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { cn } from "~/lib/utils";
@@ -47,6 +48,7 @@ export const Post = ({ post }: { post: Post }) => {
   if (post === undefined) {
     return null;
   }
+  const [commentsNum, setCommentsNum] = useState(post.comments.length);
 
   return (
     <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
@@ -62,6 +64,7 @@ export const Post = ({ post }: { post: Post }) => {
           likes={post.likes ?? []}
           postId={post.id}
           userId={user?.id ?? ""}
+          commentsNum={commentsNum}
           mediaQuery="hidden md:flex"
         />
       </div>
@@ -76,7 +79,13 @@ export const Post = ({ post }: { post: Post }) => {
           />
         </div>
       )}
-      <InteractionButtons mediaQuery="md:hidden" />
+      <InteractionButtons
+        likes={post.likes ?? []}
+        postId={post.id}
+        userId={user?.id ?? ""}
+        commentsNum={commentsNum}
+        mediaQuery="md:hidden"
+      />
     </div>
   );
 };
@@ -85,6 +94,7 @@ type InteractionButtonsProps = {
   postId: string;
   userId: string;
   mediaQuery: string;
+  commentsNum: number;
   likes: {
     id: string;
     userId: string;
@@ -97,7 +107,9 @@ const InteractionButtons = ({
   postId,
   userId,
   likes,
+  commentsNum,
 }: InteractionButtonsProps) => {
+  const router = useRouter();
   const [liked, setLiked] = useState(false);
   const [likesNum, setLikesNum] = useState<number>(0);
   useEffect(() => {
@@ -132,16 +144,19 @@ const InteractionButtons = ({
       <button
         onClick={handleLike}
         disabled={liked}
-        className={`${liked ? "border border-accent bg-background text-accent" : ""} flex items-center gap-2 rounded-lg bg-accent px-3 py-2 font-bold text-background`}
+        className={`${liked ? "border border-accent bg-background text-accent" : "bg-accent text-background"} flex items-center gap-2 rounded-lg px-3 py-2 font-bold`}
       >
         <LikeSVG
           color={liked ? "rgba(120, 140, 173, 1)" : "rgba(10, 7, 6, 1)"}
         />
         <span>{likesNum}</span>
       </button>
-      <button className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 font-bold text-background">
+      <button
+        onClick={() => router.push(`/post/${postId}`)}
+        className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 font-bold text-background"
+      >
         <CommentSVG />
-        <span>100</span>
+        <span>{commentsNum}</span>
       </button>
     </div>
   );
