@@ -9,10 +9,12 @@ import { users } from "~/server/db/schema";
 export default async function UserProfile({
   params,
 }: {
-  params: { "user-id": string };
+  params: Promise<string>;
 }) {
+  const slug = await params;
+  const userIdSlug = slug["user-id"] as string;
   const user = await db.query.users.findFirst({
-    where: eq(users.id, params["user-id"]),
+    where: eq(users.id, userIdSlug),
   });
 
   if (!user) {
@@ -67,7 +69,7 @@ export default async function UserProfile({
       </div>
       <div className="flex w-full max-w-[650px] flex-col items-center gap-4 rounded-lg bg-background p-6 shadow-post">
         <h1 className="text-2xl font-bold">User Profile</h1>
-        <p>User ID: {params["user-id"]}</p>
+        <p>User ID: {slug}</p>
         <div className="flex w-full flex-col items-center gap-4">
           {user.avatar && (
             <Image
