@@ -84,10 +84,43 @@ const Comments = ({ comments }: CommentsProps) => {
   if (comments.length === 0) {
     return null;
   }
-  // sort the comments by timestamp
+
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    // If less than a minute ago
+    if (diffInSeconds < 60) {
+      return "Just now";
+    }
+    // If less than an hour ago
+    if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+    }
+    // If less than a day ago
+    if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+    }
+    // If less than a week ago
+    if (diffInSeconds < 604800) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} ${days === 1 ? "day" : "days"} ago`;
+    }
+    // Otherwise return the date
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   comments.sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
   );
+
   return (
     <div className="flex w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
       {comments.map((comment) => (
@@ -106,7 +139,9 @@ const Comments = ({ comments }: CommentsProps) => {
               />
               <p className="text-sm font-semibold">{comment.author.username}</p>
             </div>
-            <p className="text-text-muted text-sm">{comment.timestamp}</p>
+            <p className="text-text-muted text-sm">
+              {formatTimestamp(comment.timestamp)}
+            </p>
           </div>
           <p className="text-text-muted text-sm">{comment.content}</p>
         </div>
