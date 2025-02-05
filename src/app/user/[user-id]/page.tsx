@@ -55,7 +55,7 @@ export default async function UserProfile({
           </FollowButton>
         </div>
       </div>
-      <FollowersFollwingTable userId={user.id} />
+      {/* <FollowersFollwingTable userId={user.id} /> */}
       <div className="flex w-full max-w-96 flex-col items-start justify-start gap-2">
         <h1 className="text-2xl font-semibold">Bio</h1>
         <div className="relative w-full">
@@ -69,7 +69,7 @@ export default async function UserProfile({
       </div>
       <div className="flex w-full max-w-[650px] flex-col items-center gap-4 rounded-lg bg-background p-6 shadow-post">
         <h1 className="text-2xl font-bold">User Profile</h1>
-        <p>User ID: {slug}</p>
+        <p>User ID: {userIdSlug}</p>
         <div className="flex w-full flex-col items-center gap-4">
           {user.avatar && (
             <Image
