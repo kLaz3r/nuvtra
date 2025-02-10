@@ -1,10 +1,12 @@
 import { eq } from "drizzle-orm";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import FollowButton from "~/components/FollowButton";
+import { Post } from "~/components/Post";
 import { Textarea } from "~/components/ui/textarea";
 import { db } from "~/server/db";
-import { users } from "~/server/db/schema";
+import { posts, users } from "~/server/db/schema";
 
 export default async function UserProfile({
   params,
@@ -53,6 +55,45 @@ export default async function UserProfile({
       });
     }),
   );
+
+  // For each post (from user.posts array), re-fetch the full post info from the database
+  const postsWithFullInfo = await Promise.all(
+    user.posts.map(async (postSummary) => {
+      const fullPost = await db.query.posts.findFirst({
+        where: eq(posts.id, postSummary.id),
+        with: {
+          // Fetch complete author details
+          author: {
+            columns: {
+              id: true,
+              username: true,
+              avatar: true,
+              email: true,
+              bio: true,
+              location: true,
+              createdAt: true,
+            },
+          },
+          // Also fetch comments with their authors
+          comments: {
+            with: {
+              author: {
+                columns: {
+                  id: true,
+                  username: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+          likes: true,
+        },
+      });
+      return fullPost;
+    }),
+  );
+
+  const validPosts = postsWithFullInfo.filter(Boolean);
 
   return (
     <main className="flex min-h-screen min-w-80 flex-col items-center p-4">
@@ -106,66 +147,68 @@ export default async function UserProfile({
       </div>
       <div className="mt-9 flex w-full max-w-96 flex-row items-start justify-between gap-4">
         <div className="flex flex-col items-start justify-start gap-2">
-          <h1 className="text-2xl font-semibold">Urmaritori</h1>
+          <Link
+            href={`/user/${user.id}/followers`}
+            className="text-2xl font-semibold hover:underline"
+          >
+            Urmaritori
+          </Link>
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             {followerDetails.map(
               (follower) =>
                 follower && (
-                  <div key={follower.id} className="flex items-center gap-2">
-                    <Image
-                      className="rounded-full"
-                      src={follower.avatar || "/default-avatar.png"}
-                      alt={`${follower.username}'s avatar`}
-                      width={40}
-                      height={40}
-                    />
-                    <h2 className="text-xl font-medium">{follower.username}</h2>
-                  </div>
+                  <Link key={follower.id} href={`/user/${follower.id}`}>
+                    <div className="flex cursor-pointer items-center gap-2">
+                      <Image
+                        className="rounded-full"
+                        src={follower.avatar || "/default-avatar.png"}
+                        alt={`${follower.username}'s avatar`}
+                        width={40}
+                        height={40}
+                      />
+                      <h2 className="text-xl font-medium">
+                        {follower.username}
+                      </h2>
+                    </div>
+                  </Link>
                 ),
             )}
           </div>
         </div>
         <div className="flex flex-col items-start justify-start gap-2">
-          <h1 className="text-2xl font-semibold">Urmariti</h1>
+          <Link
+            href={`/user/${user.id}/following`}
+            className="text-2xl font-semibold hover:underline"
+          >
+            Urmariti
+          </Link>
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             {followingDetails.map(
               (following) =>
                 following && (
-                  <div key={following.id} className="flex items-center gap-2">
-                    <Image
-                      className="rounded-full"
-                      src={following.avatar || "/default-avatar.png"}
-                      alt={`${following.username}'s avatar`}
-                      width={40}
-                      height={40}
-                    />
-                    <h2 className="text-xl font-medium">
-                      {following.username}
-                    </h2>
-                  </div>
+                  <Link key={following.id} href={`/user/${following.id}`}>
+                    <div className="flex cursor-pointer items-center gap-2">
+                      <Image
+                        className="rounded-full"
+                        src={following.avatar || "/default-avatar.png"}
+                        alt={`${following.username}'s avatar`}
+                        width={40}
+                        height={40}
+                      />
+                      <h2 className="text-xl font-medium">
+                        {following.username}
+                      </h2>
+                    </div>
+                  </Link>
                 ),
             )}
           </div>
         </div>
       </div>
-      <div className="flex w-full max-w-[650px] flex-col items-center gap-4 rounded-lg bg-background p-6 shadow-post">
-        <h1 className="text-2xl font-bold">User Profile</h1>
-        <p>User ID: {userIdSlug}</p>
-        <div className="flex w-full flex-col items-center gap-4">
-          {user.avatar && (
-            <Image
-              src={user.avatar}
-              alt={`${user.username}'s avatar`}
-              width={100}
-              height={100}
-            />
-          )}
-          <h2 className="text-xl font-bold">{user.username}</h2>
-          <p>{user.bio}</p>
-          <p>Location: {user.location}</p>
-          <p>Joined: {formattedDate}</p>
-          <p>Email: {user.email}</p>
-        </div>
+      <div className="mt-9 flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-background px-2 py-6 text-text">
+        {validPosts.map((post) => (
+          <Post key={post!.id} post={post!} />
+        ))}
       </div>
     </main>
   );
