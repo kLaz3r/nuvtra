@@ -2,7 +2,8 @@
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Post } from "~/components/Post";
+import InfinitePosts from "~/components/InfinitePosts.client";
+import { type Post } from "~/components/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { UploadButton } from "~/utils/uploadthing";
 
@@ -19,46 +20,15 @@ export type PostProps = {
 
 const FeedPage = () => {
   const { user } = useUser();
-  const [posts, setPosts] = useState<PostProps[]>([]);
 
-  useEffect(() => {
-    async function getData() {
-      try {
-        const response = await fetch("/api/posts/get", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to get data");
-        }
-
-        console.log("data fetch gud");
-        const data = (await response.json()) as Post[];
-        setPosts(data);
-      } catch (error) {
-        console.error("Error geting data:", error);
-      }
-    }
-    void getData();
-  }, [user]);
-  if (posts.length === 0) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-2 py-6 text-text">
-        <span className="loader"></span>
-      </div>
-    );
-  }
   if (!user) {
     return null;
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-2 py-6 text-text">
+    <div className="flex min-h-screen flex-col items-center justify-start gap-4 bg-background px-2 py-6 text-text">
       <CreatePost />
-      {posts ? posts.map((post) => <Post key={post.id} post={post} />) : null}
+      <InfinitePosts />
     </div>
   );
 };
@@ -81,6 +51,13 @@ type User = {
 
 const CreatePost = () => {
   const { user } = useUser();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [formData, setFormData] = useState<FormData>({
+    authorId: user!.id,
+    bodyText: "",
+    image: null,
+  });
+
   useEffect(() => {
     async function getData() {
       try {
@@ -90,9 +67,7 @@ const CreatePost = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            userId: user!.id,
-          }),
+          body: JSON.stringify({ userId: user!.id }),
         });
 
         if (!response.ok) {
@@ -114,12 +89,7 @@ const CreatePost = () => {
       image: formData.image,
     });
   }, [user]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [formData, setFormData] = useState<FormData>({
-    authorId: user!.id,
-    bodyText: "",
-    image: null,
-  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -134,24 +104,25 @@ const CreatePost = () => {
       if (!response.ok) {
         throw new Error("Failed to create post");
       }
-
       console.log("post created successfully");
       window.location.reload();
     } catch (error) {
       console.error("Error creating post:", error);
     }
   };
+
   const handleChange =
     (field: keyof typeof formData) =>
-    async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setFormData((prev) => ({
         ...prev,
         [field]: e.target.value,
       }));
     };
+
   return (
     <div className="flex w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
-      {currentUser ? (
+      {currentUser && (
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar>
@@ -161,7 +132,7 @@ const CreatePost = () => {
             <h2 className="text-lg font-semibold">{currentUser.username}</h2>
           </div>
         </div>
-      ) : null}
+      )}
       <form
         onSubmit={handleSubmit}
         className="flex w-full flex-col items-start justify-start gap-2"
@@ -187,10 +158,7 @@ const CreatePost = () => {
             <UploadButton
               endpoint={"imageUploader"}
               onClientUploadComplete={(res): void => {
-                setFormData((prev) => ({
-                  ...prev,
-                  image: res[0]!.url,
-                }));
+                setFormData((prev) => ({ ...prev, image: res[0]!.url }));
               }}
             />
           ) : (
