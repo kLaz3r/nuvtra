@@ -13,9 +13,20 @@ export default async function UserProfile({
 }) {
   const slug = await params;
   const userIdSlug = slug["user-id"] as string;
+
   const user = await db.query.users.findFirst({
     where: eq(users.id, userIdSlug),
+    with: {
+      posts: true,
+      comments: true,
+      likes: true,
+      receivedNotifications: true,
+      createdNotifications: true,
+      followedBy: true,
+      following: true,
+    },
   });
+  console.log(user);
 
   if (!user) {
     notFound();
@@ -23,8 +34,28 @@ export default async function UserProfile({
 
   const formattedDate = new Date(user.createdAt).toLocaleDateString();
 
+  // Fetch follower details limited to 5 iterations
+  const limitedFollowedBy = user.followedBy.slice(0, 5);
+  const followerDetails = await Promise.all(
+    limitedFollowedBy.map(async (follow) => {
+      return await db.query.users.findFirst({
+        where: eq(users.id, follow.followerId),
+      });
+    }),
+  );
+
+  // Fetch following details limited to 5 iterations
+  const limitedFollowing = user.following.slice(0, 5);
+  const followingDetails = await Promise.all(
+    limitedFollowing.map(async (follow) => {
+      return await db.query.users.findFirst({
+        where: eq(users.id, follow.followingId),
+      });
+    }),
+  );
+
   return (
-    <main className="flex min-h-screen flex-col items-center p-4">
+    <main className="flex min-h-screen min-w-80 flex-col items-center p-4">
       <div className="my-6 flex items-center gap-4 md:gap-6">
         <div className="relative h-28 w-28 md:h-48 md:w-48">
           <Image
@@ -41,10 +72,16 @@ export default async function UserProfile({
           <h3 className="text-lg font-normal md:text-2xl">{user.location}</h3>
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             <h3 className="text-lg font-normal">
-              Urmaritori <span className="font-semibold text-primary">100</span>
+              Urmaritori{" "}
+              <span className="font-semibold text-primary">
+                {user.followedBy.length}
+              </span>
             </h3>
             <h3 className="text-lg font-normal">
-              Urmariti <span className="font-semibold text-primary">100</span>
+              Urmariti{" "}
+              <span className="font-semibold text-primary">
+                {user.following.length}
+              </span>
             </h3>
           </div>
           <FollowButton
@@ -65,6 +102,50 @@ export default async function UserProfile({
             value={user.bio === "" ? "Utilizatorul nu are biografie" : user.bio}
             readOnly
           />
+        </div>
+      </div>
+      <div className="mt-9 flex w-full max-w-96 flex-row items-start justify-between gap-4">
+        <div className="flex flex-col items-start justify-start gap-2">
+          <h1 className="text-2xl font-semibold">Urmaritori</h1>
+          <div className="flex w-full flex-wrap items-center justify-between gap-4">
+            {followerDetails.map(
+              (follower) =>
+                follower && (
+                  <div key={follower.id} className="flex items-center gap-2">
+                    <Image
+                      className="rounded-full"
+                      src={follower.avatar || "/default-avatar.png"}
+                      alt={`${follower.username}'s avatar`}
+                      width={40}
+                      height={40}
+                    />
+                    <h2 className="text-xl font-medium">{follower.username}</h2>
+                  </div>
+                ),
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col items-start justify-start gap-2">
+          <h1 className="text-2xl font-semibold">Urmariti</h1>
+          <div className="flex w-full flex-wrap items-center justify-between gap-4">
+            {followingDetails.map(
+              (following) =>
+                following && (
+                  <div key={following.id} className="flex items-center gap-2">
+                    <Image
+                      className="rounded-full"
+                      src={following.avatar || "/default-avatar.png"}
+                      alt={`${following.username}'s avatar`}
+                      width={40}
+                      height={40}
+                    />
+                    <h2 className="text-xl font-medium">
+                      {following.username}
+                    </h2>
+                  </div>
+                ),
+            )}
+          </div>
         </div>
       </div>
       <div className="flex w-full max-w-[650px] flex-col items-center gap-4 rounded-lg bg-background p-6 shadow-post">
