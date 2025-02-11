@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import dynamic from "next/dynamic";
@@ -15,7 +16,7 @@ export type PostType = {
   imageUrl?: string | null;
   timestamp: Date;
   authorId: string;
-  comments: any[];
+  comments: unknown[];
   likes: {
     id: string;
     userId: string;
@@ -72,7 +73,7 @@ export default function InfinitePosts() {
 
   // Load the first set of posts when the component mounts.
   useEffect(() => {
-    loadPosts();
+    void loadPosts();
   }, [loadPosts]);
 
   // Set up the IntersectionObserver to load more posts when the sentinel comes into view.
@@ -80,10 +81,9 @@ export default function InfinitePosts() {
     if (loading || !hasMore) return;
 
     if (observer.current) observer.current.disconnect();
-
     observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        loadPosts();
+      if (entries[0]?.isIntersecting) {
+        void loadPosts();
       }
     });
     if (loadMoreRef.current) {
