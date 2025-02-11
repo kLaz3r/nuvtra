@@ -18,7 +18,7 @@ export type Post = {
   imageUrl?: string | null;
   timestamp: Date;
   authorId: string;
-  comments: any[];
+  comments: unknown[];
   likes: {
     id: string;
     userId: string;

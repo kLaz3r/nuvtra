@@ -2,14 +2,14 @@
 
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
 
 export function NavbarWrapper() {
+  const [searchInput, setSearchInput] = useState("");
   const pathname = usePathname();
-  console.log(pathname);
-
   if (pathname === "/" || pathname === "/sign-in") return null;
 
   return (
@@ -18,7 +18,11 @@ export function NavbarWrapper() {
         <div className="w-[164px]">
           <NexaSVG />
         </div>
-        <SearchInput mediaQuery="hidden md:flex" />
+        <SearchInput
+          mediaQuery="hidden md:flex"
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
         <div className="flex w-[164px] items-center justify-end gap-4">
           <Link href="/">
             <HomeIconSVG />
@@ -35,19 +39,44 @@ export function NavbarWrapper() {
           <UserButton />
         </div>
       </div>
-      <SearchInput mediaQuery="md:hidden" />
+      <SearchInput
+        mediaQuery="md:hidden"
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
     </nav>
   );
 }
 
-const SearchInput = ({ mediaQuery }: { mediaQuery: string }) => {
+const SearchInput = ({
+  mediaQuery,
+  searchInput,
+  setSearchInput,
+}: {
+  mediaQuery: string;
+  searchInput: string;
+  setSearchInput: React.Dispatch<React.SetStateAction<string>>;
+}) => {
+  const router = useRouter();
+  const handleSearchSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push(`/search?q=${searchInput}`);
+    console.log("searchInput", searchInput);
+  };
   return (
     <div className={cn("relative w-full md:w-96", mediaQuery)}>
-      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
-      <Input
-        placeholder="Search"
-        className="relative m-[1px] w-[calc(100%-2px)] bg-background"
-      />
+      <form
+        onSubmit={handleSearchSubmit}
+        className="flex w-full flex-col items-center justify-center gap-2"
+      >
+        <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
+        <Input
+          placeholder="Search"
+          className="relative m-[1px] w-[calc(100%-2px)] bg-background"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </form>
     </div>
   );
 };

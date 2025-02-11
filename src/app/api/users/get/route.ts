@@ -17,6 +17,15 @@ export async function POST(request: Request) {
     // Query the database for the user
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
+      with: {
+        posts: true,
+        comments: true,
+        likes: true,
+        receivedNotifications: true,
+        createdNotifications: true,
+        followedBy: true,
+        following: true,
+      },
     });
 
     if (!user) {

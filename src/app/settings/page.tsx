@@ -4,6 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/dist/client/components/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { type User } from "~/components/Post";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
@@ -21,6 +22,8 @@ type FormData = {
 const SettingsPage = () => {
   const router = useRouter();
   const { user } = useUser();
+  const [followers, setFollowers] = useState<number>(0);
+  const [following, setFollowing] = useState<number>(0);
   const [formData, setFormData] = useState<FormData>({
     id: "",
     username: "",
@@ -55,7 +58,11 @@ const SettingsPage = () => {
           location: string;
           bio: string;
           avatar: string;
+          followedBy: User[];
+          following: User[];
         };
+        setFollowers(userData.followedBy.length);
+        setFollowing(userData.following.length);
         setFormData({
           id: user.id,
           username: userData.username ?? "",
@@ -123,10 +130,12 @@ const SettingsPage = () => {
           </h3>
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             <h3 className="text-lg font-normal">
-              Urmaritori <span className="font-semibold text-primary">100</span>
+              Urmaritori{" "}
+              <span className="font-semibold text-primary">{followers}</span>
             </h3>
             <h3 className="text-lg font-normal">
-              Urmariti <span className="font-semibold text-primary">100</span>
+              Urmariti{" "}
+              <span className="font-semibold text-primary">{following}</span>
             </h3>
           </div>
         </div>
