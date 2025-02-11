@@ -108,7 +108,7 @@ const SettingsPage = () => {
       <div className="mb-6 flex items-center gap-4 md:gap-6">
         <div className="relative h-28 w-28 md:h-48 md:w-48">
           <Image
-            src={formData.avatar ?? null}
+            src={formData.avatar ?? "/default-avatar.png"}
             alt="avatar"
             fill
             className="rounded-full"

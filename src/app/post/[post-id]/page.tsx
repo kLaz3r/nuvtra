@@ -131,7 +131,7 @@ const Comments = ({ comments }: CommentsProps) => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Image
-                src={comment.author.avatar ?? ""}
+                src={comment.author.avatar ?? "/default-avatar.png"}
                 width={20}
                 height={20}
                 alt="comment author avatar"

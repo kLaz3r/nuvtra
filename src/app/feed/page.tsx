@@ -126,7 +126,7 @@ const CreatePost = () => {
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar>
-              <AvatarImage src={currentUser.avatar ?? ""} />
+              <AvatarImage src={currentUser.avatar ?? "/default-avatar.png"} />
               <AvatarFallback>{currentUser.username[0]}</AvatarFallback>
             </Avatar>
             <h2 className="text-lg font-semibold">{currentUser.username}</h2>

@@ -37,7 +37,7 @@ export const Post = ({ post }: { post: Post }) => {
       <div className="flex w-full items-center justify-between">
         <a href={`/user/${post.authorId}`} className="flex items-center gap-4">
           <Avatar>
-            <AvatarImage src={post.author.avatar ?? ""} />
+            <AvatarImage src={post.author.avatar ?? "/default-avatar.png"} />
             <AvatarFallback>{post.author.username[0]}</AvatarFallback>
           </Avatar>
           <h2 className="text-lg font-semibold">{post.author.username}</h2>
