@@ -1,15 +1,159 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
+
+// Add the Notification type
+type Notification = {
+  id: string;
+  type: "like" | "comment" | "follow" | "mention";
+  content: string;
+  createdAt: Date;
+  read: boolean;
+};
+
+function NotificationItem({ notification }: { notification: Notification }) {
+  const getNotificationIcon = (type: Notification["type"]) => {
+    switch (type) {
+      case "like":
+        return <HeartIcon />;
+      case "comment":
+        return <CommentIcon />;
+      case "follow":
+        return <UserIcon />;
+      case "mention":
+        return <AtIcon />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div
+      className={`hover:bg-muted flex items-start gap-3 rounded-lg p-3 transition-colors ${
+        !notification.read ? "bg-muted/50" : ""
+      }`}
+    >
+      <div className="mt-1 text-primary">
+        {getNotificationIcon(notification.type)}
+      </div>
+      <div className="flex flex-col gap-1">
+        <p className="text-sm">{notification.content}</p>
+        <span className="text-muted-foreground text-xs">
+          {new Date(notification.createdAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+const HeartIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+  </svg>
+);
+
+const CommentIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const AtIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="4" />
+    <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
+  </svg>
+);
 
 export function NavbarWrapper() {
   const [searchInput, setSearchInput] = useState("");
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const pathname = usePathname();
+
+  // Mock notifications data - replace with actual data from your database
+  const mockNotifications: Notification[] = [
+    {
+      id: "1",
+      type: "like",
+      content: "John Doe liked your post",
+      createdAt: new Date(),
+      read: false,
+    },
+    {
+      id: "2",
+      type: "comment",
+      content: "Jane Smith commented on your post",
+      createdAt: new Date(),
+      read: true,
+    },
+    {
+      id: "3",
+      type: "follow",
+      content: "Alex Johnson started following you",
+      createdAt: new Date(),
+      read: false,
+    },
+  ];
+
   if (pathname === "/" || pathname === "/sign-in") return null;
 
   return (
@@ -30,9 +174,56 @@ export function NavbarWrapper() {
           <Link href="/search">
             <SearchIconSVG />
           </Link>
-          <Link href="#">
-            <BellIconSVG />
-          </Link>
+          <PopoverPrimitive.Root
+            open={isNotificationsOpen}
+            onOpenChange={setIsNotificationsOpen}
+          >
+            <PopoverPrimitive.Trigger asChild>
+              <button className="relative">
+                <BellIconSVG />
+                {mockNotifications.some((n) => !n.read) && (
+                  <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
+                )}
+              </button>
+            </PopoverPrimitive.Trigger>
+            <PopoverPrimitive.Portal>
+              <PopoverPrimitive.Content
+                align="end"
+                sideOffset={8}
+                className={cn(
+                  "z-50 w-80 rounded-lg border bg-background p-4 shadow-md outline-none",
+                  "data-[state=open]:animate-in data-[state=closed]:animate-out",
+                  "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+                  "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+                  "data-[side=bottom]:slide-in-from-top-2",
+                  "data-[side=top]:slide-in-from-bottom-2",
+                )}
+              >
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-lg font-semibold text-primary">
+                    Notifications
+                  </h2>
+                  <ScrollArea className="h-[min(60vh,400px)]">
+                    {mockNotifications.length === 0 ? (
+                      <p className="text-muted-foreground text-center text-sm">
+                        No notifications yet
+                      </p>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {mockNotifications.map((notification) => (
+                          <NotificationItem
+                            key={notification.id}
+                            notification={notification}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
+                <PopoverPrimitive.Arrow className="fill-border" />
+              </PopoverPrimitive.Content>
+            </PopoverPrimitive.Portal>
+          </PopoverPrimitive.Root>
           <Link href="/settings">
             <SettingsIconSVG />
           </Link>

@@ -101,7 +101,7 @@ export default function InfinitePosts() {
       {loading && <span className="loader"></span>}
       {/* Sentinel element */}
       <div ref={loadMoreRef} className="h-1 w-full" />
-      {!hasMore && <p>No more posts.</p>}
+      {!hasMore && <p>Acestea au fost toate postarile.</p>}
     </div>
   );
 }
