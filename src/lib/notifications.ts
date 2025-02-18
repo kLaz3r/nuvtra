@@ -7,11 +7,13 @@ export async function createNotification({
   userId,
   createdById,
   message,
+  postId,
 }: {
   type: NotificationType;
   userId: string;
   createdById: string;
   message: string;
+  postId?: string;
 }) {
   try {
     await db.insert(notifications).values({
@@ -19,6 +21,7 @@ export async function createNotification({
       userId,
       createdById,
       message,
+      postId,
     });
   } catch (error) {
     console.error("Error creating notification:", error);

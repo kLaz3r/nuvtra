@@ -88,6 +88,7 @@ export const notifications = pgTable("notification", {
   createdById: varchar("created_by_id", { length: 256 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  postId: uuid("post_id").references(() => posts.id, { onDelete: "cascade" }),
   isRead: boolean("is_read").default(false).notNull(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

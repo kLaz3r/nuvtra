@@ -59,6 +59,7 @@ export async function POST(req: Request) {
         userId: post.author.id,
         createdById: userId,
         message: `${user?.username} liked your post`,
+        postId: postId,
       });
     }
 

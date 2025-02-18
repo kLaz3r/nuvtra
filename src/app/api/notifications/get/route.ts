@@ -20,6 +20,14 @@ export async function POST(request: Request) {
         eq(notifications.userId, userId),
         eq(notifications.isRead, false),
       ),
+      columns: {
+        id: true,
+        type: true,
+        message: true,
+        isRead: true,
+        timestamp: true,
+        postId: true,
+      },
       with: {
         creator: {
           columns: {

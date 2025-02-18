@@ -16,6 +16,7 @@ type Notification = {
   message: string;
   isRead: boolean;
   timestamp: Date;
+  postId: string | null; // Make postId explicitly nullable since it's optional in the schema
   creator: {
     id: string;
     username: string;
@@ -24,6 +25,8 @@ type Notification = {
 };
 
 function NotificationItem({ notification }: { notification: Notification }) {
+  const router = useRouter();
+
   const getNotificationIcon = (type: Notification["type"]) => {
     switch (type) {
       case "LIKE":
@@ -37,16 +40,46 @@ function NotificationItem({ notification }: { notification: Notification }) {
     }
   };
 
+  const handleClick = async () => {
+    try {
+      // Mark notification as read
+      await fetch("/api/notifications/mark-read", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ notificationId: notification.id }),
+      });
+
+      // Navigate based on notification type
+      switch (notification.type) {
+        case "LIKE":
+        case "COMMENT":
+          if (notification.postId) {
+            // Only navigate if postId exists
+            router.push(`/post/${notification.postId}`);
+          }
+          break;
+        case "FOLLOW":
+          router.push(`/user/${notification.creator.id}`);
+          break;
+      }
+    } catch (error) {
+      console.error("Error handling notification click:", error);
+    }
+  };
+
   return (
-    <div
-      className={`hover:bg-muted flex items-start gap-3 rounded-lg p-3 transition-colors ${
+    <button
+      onClick={handleClick}
+      className={`hover:bg-muted flex w-full items-start gap-3 rounded-lg p-3 transition-colors ${
         !notification.isRead ? "bg-muted/50" : ""
       }`}
     >
       <div className="mt-1 text-primary">
         {getNotificationIcon(notification.type)}
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 text-left">
         <p className="text-sm">{notification.message}</p>
         <span className="text-muted-foreground text-xs">
           {new Date(notification.timestamp).toLocaleDateString("en-US", {
@@ -57,7 +90,7 @@ function NotificationItem({ notification }: { notification: Notification }) {
           })}
         </span>
       </div>
-    </div>
+    </button>
   );
 }
 
