@@ -30,7 +30,7 @@ export default function FollowButton({
         if (!response.ok) {
           throw new Error("Failed to check follow status");
         }
-        const data: { isFollowing: boolean } = await response.json();
+        const data = (await response.json()) as { isFollowing: boolean };
         setIsFollowing(data.isFollowing);
       } catch {
         setIsFollowing(false);

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createNotification } from "~/lib/notifications";
 import { db } from "~/server/db";
-import { likes, users } from "~/server/db/schema";
+import { likes } from "~/server/db/schema";
 
 export async function POST(req: Request) {
   try {
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true, like: newLike });
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Failed to create like" }), {
       status: 500,
     });

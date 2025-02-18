@@ -34,8 +34,6 @@ export default async function UserProfile({
     notFound();
   }
 
-  const formattedDate = new Date(user.createdAt).toLocaleDateString();
-
   // Fetch follower details limited to 5 iterations
   const limitedFollowedBy = user.followedBy.slice(0, 5);
   const followerDetails = await Promise.all(

@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { createNotification } from "~/lib/notifications";
 import { db } from "~/server/db";
-import { follows, users } from "~/server/db/schema";
+import { follows } from "~/server/db/schema";
 
 type Follow = {
   followerId: string;
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       { message: "Follow successful", follow: newFollow[0] },
       { status: 201 },
     );
-  } catch (error) {
+  } catch {
     return new Response(
       JSON.stringify({ error: "Failed to create follow relationship" }),
       {

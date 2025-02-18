@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createNotification } from "~/lib/notifications";
 import { db } from "~/server/db";
-import { comments, posts, users } from "~/server/db/schema";
+import { comments } from "~/server/db/schema";
 
 type CreateCommentRequest = {
   postId: string;
