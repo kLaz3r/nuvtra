@@ -187,6 +187,7 @@ export function NavbarWrapper() {
         setNotifications(data);
       } catch (error) {
         console.error("Error fetching notifications:", error);
+        setNotifications([]);
       } finally {
         setIsLoading(false);
       }
@@ -296,8 +297,9 @@ const SearchInput = ({
   const router = useRouter();
   const handleSearchSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/search?q=${searchInput}`);
-    console.log("searchInput", searchInput);
+    if (searchInput.length > 0) {
+      router.push(`/search?q=${encodeURIComponent(searchInput)}`);
+    }
   };
   return (
     <div className={cn("relative w-full md:w-96", mediaQuery)}>

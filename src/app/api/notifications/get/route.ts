@@ -42,10 +42,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json(unreadNotifications);
   } catch (error) {
-    console.error("Error fetching notifications:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return new Response(
+      JSON.stringify({ error: "Failed to fetch notifications" }),
+      {
+        status: 500,
+      },
     );
   }
 }

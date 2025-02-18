@@ -65,8 +65,7 @@ export default function InfinitePosts() {
         return [...prevPosts, ...newUniquePosts];
       });
     } catch (error) {
-      console.error("Error loading posts:", error);
-    } finally {
+      setHasMore(false);
       setLoading(false);
     }
   }, [posts.length]);

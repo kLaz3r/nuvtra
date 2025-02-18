@@ -61,7 +61,6 @@ const CreatePost = () => {
   useEffect(() => {
     async function getData() {
       try {
-        console.log("geting user", user!.id);
         const response = await fetch("/api/users/get", {
           method: "POST",
           headers: {
@@ -74,11 +73,10 @@ const CreatePost = () => {
           throw new Error("Failed to get data");
         }
 
-        console.log("user fetch gud");
         const data = (await response.json()) as User;
         setCurrentUser(data);
       } catch (error) {
-        console.error("Error geting user:", error);
+        setCurrentUser(null);
       }
     }
     void getData();
@@ -104,10 +102,9 @@ const CreatePost = () => {
       if (!response.ok) {
         throw new Error("Failed to create post");
       }
-      console.log("post created successfully");
       window.location.reload();
     } catch (error) {
-      console.error("Error creating post:", error);
+      // Failed silently as the user will see the post didn't appear
     }
   };
 

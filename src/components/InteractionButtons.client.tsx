@@ -54,7 +54,7 @@ export default function InteractionButtons({
     try {
       await like(user?.id ?? "", postId);
     } catch (error) {
-      console.error("Error liking post:", error);
+      setLiked(liked);
       setLikesNum(likes.length);
     }
   };

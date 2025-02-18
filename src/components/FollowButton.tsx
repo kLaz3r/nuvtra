@@ -26,51 +26,46 @@ export default function FollowButton({
 
       try {
         const response = await fetch(
-          `/api/follow/check?followerId=${user.id}&followingId=${followingId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
+          `/api/follow/check?followerId=${userId}&followingId=${followingId}`,
         );
-        const data = await response.json();
+        if (!response.ok) {
+          throw new Error("Failed to check follow status");
+        }
+        const data: { isFollowing: boolean } = await response.json();
         setIsFollowing(data.isFollowing);
       } catch (error) {
-        console.error("Error checking follow status:", error);
+        setIsFollowing(false);
       }
     };
 
     checkFollowStatus();
-  }, [user?.id, followingId]);
+  }, [user?.id, userId, followingId]);
 
   const handleToggleFollow = async () => {
     if (!user?.id) return;
 
     setIsLoading(true);
     try {
-      const endpoint = isFollowing
-        ? "/api/follow/delete"
-        : "/api/follow/create";
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "/api/follow/" + (isFollowing ? "delete" : "create"),
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            followerId: userId,
+            followingId: followingId,
+          }),
         },
-        body: JSON.stringify({
-          followerId: user.id,
-          followingId,
-        }),
-      });
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to toggle follow");
+        throw new Error("Failed to toggle follow status");
       }
 
       setIsFollowing(!isFollowing);
     } catch (error) {
-      console.error("Error toggling follow:", error);
-    } finally {
       setIsLoading(false);
     }
   };

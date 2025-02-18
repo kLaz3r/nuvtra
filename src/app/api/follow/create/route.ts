@@ -65,10 +65,11 @@ export async function POST(req: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("Error creating follow:", error);
-    return NextResponse.json(
-      { error: "Failed to create follow relationship" },
-      { status: 500 },
+    return new Response(
+      JSON.stringify({ error: "Failed to create follow relationship" }),
+      {
+        status: 500,
+      },
     );
   }
 }

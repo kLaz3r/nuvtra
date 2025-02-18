@@ -35,9 +35,6 @@ export default async function SearchPage({
   const users = (await userRes.json()) as User[];
 
   // Limit results to 20 of each
-  console.log("posts", posts);
-  console.log("users", users);
-
   const limitedPosts = posts.slice(0, 20);
   const limitedUsers = users.slice(0, 20);
 

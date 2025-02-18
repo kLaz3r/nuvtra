@@ -34,7 +34,8 @@ export default function PostPage() {
         setPost(data);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching post:", error);
+        setIsLoading(false);
+        setPost(null);
       }
     }
     void getPost();
@@ -55,7 +56,6 @@ export default function PostPage() {
     return null;
   }
 
-  console.log("post", post);
   return (
     <div className="flex min-h-screen flex-col items-center justify-start gap-4 bg-background px-2 py-6 text-text">
       <div className="flex w-full max-w-[650px] flex-col items-center justify-between gap-4">
@@ -90,26 +90,21 @@ const Comments = ({ comments }: CommentsProps) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    // If less than a minute ago
     if (diffInSeconds < 60) {
       return "Chiar acum";
     }
-    // If less than an hour ago
     if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
       return `acum ${minutes} ${minutes === 1 ? "minut" : "minute"}`;
     }
-    // If less than a day ago
     if (diffInSeconds < 86400) {
       const hours = Math.floor(diffInSeconds / 3600);
       return `acum ${hours} ${hours === 1 ? "oră" : "ore"}`;
     }
-    // If less than a week ago
     if (diffInSeconds < 604800) {
       const days = Math.floor(diffInSeconds / 86400);
       return `acum ${days} ${days === 1 ? "zi" : "zile"}`;
     }
-    // Otherwise return the date
     return date.toLocaleDateString("ro-RO", {
       year: "numeric",
       month: "long",
@@ -161,6 +156,7 @@ const CreateComment = () => {
     e.preventDefault();
     try {
       setIsLoading(true);
+      setError("");
       const response = await fetch("/api/comments/create", {
         method: "POST",
         headers: {
@@ -177,10 +173,8 @@ const CreateComment = () => {
         throw new Error("Failed to create comment");
       }
 
-      console.log("comment created successfully");
       window.location.reload();
     } catch (error) {
-      console.error("Error creating comment:", error);
       setError("Error creating comment");
     } finally {
       setIsLoading(false);

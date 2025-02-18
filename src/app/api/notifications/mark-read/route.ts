@@ -21,10 +21,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error marking notification as read:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return new Response(
+      JSON.stringify({ error: "Failed to mark notification as read" }),
+      {
+        status: 500,
+      },
     );
   }
 }

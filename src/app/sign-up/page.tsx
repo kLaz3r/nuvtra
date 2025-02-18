@@ -24,9 +24,9 @@ const SignUpPage = () => {
   useEffect(() => {
     setFormData({
       id: user?.id ?? "",
-      username: user?.username || user?.firstName || "",
-      email: user?.emailAddresses[0]?.emailAddress || "",
-      avatar: user?.imageUrl || null,
+      username: user?.username ?? user?.firstName ?? "",
+      email: user?.emailAddresses[0]?.emailAddress ?? "",
+      avatar: user?.imageUrl ?? null,
       location: "Romania",
       bio: "",
     });
@@ -55,12 +55,8 @@ const SignUpPage = () => {
         throw new Error("Failed to update user");
       }
 
-      // Optional: Add success notification
-      console.log("User updated successfully");
       router.push("/feed");
-    } catch (error) {
-      console.error("Error updating user:", error);
-    }
+    } catch (error) {}
   };
 
   const handleChange =
@@ -82,7 +78,6 @@ const SignUpPage = () => {
           <div className="mb-6 flex items-center gap-4 md:gap-6">
             <div className="relative h-28 w-28 md:h-48 md:w-48">
               <Image
-                // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
                 src={formData.avatar ?? "/default-avatar.png"}
                 alt="avatar"
                 fill
@@ -96,16 +91,6 @@ const SignUpPage = () => {
               <h3 className="text-lg font-normal md:text-2xl">
                 {formData.location}
               </h3>
-              <div className="flex w-full flex-wrap items-center justify-between gap-4">
-                <h3 className="text-lg font-normal">
-                  Urmaritori{" "}
-                  <span className="font-semibold text-primary">100</span>
-                </h3>
-                <h3 className="text-lg font-normal">
-                  Urmariti{" "}
-                  <span className="font-semibold text-primary">100</span>
-                </h3>
-              </div>
             </div>
           </div>
           <form
@@ -113,7 +98,7 @@ const SignUpPage = () => {
             className="flex w-full flex-col items-center justify-center gap-2"
           >
             <div className="flex flex-col items-start justify-start gap-2">
-              <h1 className="text-2xl font-semibold">userName</h1>
+              <h1 className="text-2xl font-semibold">Nume de utilizator</h1>
               <StyledInput
                 placeholder="username"
                 className="w-full"

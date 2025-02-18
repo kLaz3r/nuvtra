@@ -65,10 +65,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, like: newLike });
   } catch (error) {
-    console.error("Error creating like:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return new Response(JSON.stringify({ error: "Failed to create like" }), {
+      status: 500,
+    });
   }
 }

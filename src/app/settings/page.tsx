@@ -32,6 +32,7 @@ const SettingsPage = () => {
     bio: "",
     avatar: null,
   });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function getData() {
@@ -72,7 +73,7 @@ const SettingsPage = () => {
           avatar: userData.avatar ?? null,
         });
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        setError("Failed to fetch user data");
       }
     }
     void getData();
@@ -97,7 +98,7 @@ const SettingsPage = () => {
       console.log("User updated successfully");
       router.push("/feed");
     } catch (error) {
-      console.error("Error updating user:", error);
+      setError("Failed to update user");
     }
   };
 
