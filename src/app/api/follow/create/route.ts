@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       type: "FOLLOW",
       userId: followingId,
       createdById: followerId,
-      message: `${follower?.username} started following you`,
+      message: `${follower?.username} a început să te urmărească`,
     });
 
     return NextResponse.json(

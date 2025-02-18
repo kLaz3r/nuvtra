@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         type: "LIKE",
         userId: post.author.id,
         createdById: userId,
-        message: `${user?.username} liked your post`,
+        message: `${user?.username} a apreciat postarea ta`,
         postId: postId,
       });
     }

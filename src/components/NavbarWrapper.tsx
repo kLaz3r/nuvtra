@@ -82,8 +82,8 @@ function NotificationItem({ notification }: { notification: Notification }) {
       <div className="flex flex-col gap-1 text-left">
         <p className="text-sm">{notification.message}</p>
         <span className="text-muted-foreground text-xs">
-          {new Date(notification.timestamp).toLocaleDateString("en-US", {
-            month: "short",
+          {new Date(notification.timestamp).toLocaleDateString("ro-RO", {
+            month: "long",
             day: "numeric",
             hour: "numeric",
             minute: "numeric",
@@ -242,16 +242,16 @@ export function NavbarWrapper() {
               >
                 <div className="flex flex-col gap-4">
                   <h2 className="text-lg font-semibold text-primary">
-                    Notifications
+                    Notificări
                   </h2>
                   <ScrollArea className="h-[min(60vh,400px)]">
                     {isLoading ? (
                       <p className="text-muted-foreground text-center text-sm">
-                        Loading notifications...
+                        Se încarcă notificările...
                       </p>
                     ) : notifications.length === 0 ? (
                       <p className="text-muted-foreground text-center text-sm">
-                        No notifications yet
+                        Nu ai notificări
                       </p>
                     ) : (
                       <div className="flex flex-col gap-2">
@@ -307,7 +307,7 @@ const SearchInput = ({
       >
         <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
         <Input
-          placeholder="Search"
+          placeholder="Caută"
           className="relative m-[1px] w-[calc(100%-2px)] bg-background"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}

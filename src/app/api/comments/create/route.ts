@@ -47,7 +47,7 @@ export async function POST(request: Request) {
         type: "COMMENT",
         userId: post.author.id,
         createdById: userId,
-        message: `${user?.username} commented on your post`,
+        message: `${user?.username} a comentat la postarea ta`,
         postId: postId,
       });
     }

@@ -44,15 +44,15 @@ export default async function SearchPage({
   return (
     <main className="mx-auto max-w-[1500px] p-6">
       <h1 className="mb-4 text-2xl font-bold">
-        Search Results for &quot;{searchQuery}&quot;
+        Rezultate pentru &quot;{searchQuery}&quot;
       </h1>
       {/* On big displays, show two columns; on mobile, stack users then posts */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Users Column */}
         <div>
-          <h2 className="mb-2 text-xl font-semibold">Users</h2>
+          <h2 className="mb-2 text-xl font-semibold">Utilizatori</h2>
           {limitedUsers.length === 0 ? (
-            <p>No users found.</p>
+            <p>Nu am găsit utilizatori.</p>
           ) : (
             <div className="space-y-4">
               {limitedUsers.map((user: User) => (
@@ -89,9 +89,9 @@ export default async function SearchPage({
 
         {/* Posts Column */}
         <div>
-          <h2 className="mb-2 text-xl font-semibold">Posts</h2>
+          <h2 className="mb-2 text-xl font-semibold">Postări</h2>
           {limitedPosts.length === 0 ? (
-            <p>No posts found.</p>
+            <p>Nu am găsit postări.</p>
           ) : (
             <div className="space-y-4">
               {limitedPosts.map((post: Post) => (

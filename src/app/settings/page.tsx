@@ -145,7 +145,7 @@ const SettingsPage = () => {
         className="flex w-full flex-col items-center justify-center gap-2"
       >
         <div className="flex flex-col items-start justify-start gap-2">
-          <h1 className="text-2xl font-semibold">userName</h1>
+          <h1 className="text-2xl font-semibold">Nume de utilizator</h1>
           <StyledInput
             placeholder="username"
             className="w-full"

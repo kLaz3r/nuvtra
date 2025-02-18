@@ -92,27 +92,27 @@ const Comments = ({ comments }: CommentsProps) => {
 
     // If less than a minute ago
     if (diffInSeconds < 60) {
-      return "Just now";
+      return "Chiar acum";
     }
     // If less than an hour ago
     if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+      return `acum ${minutes} ${minutes === 1 ? "minut" : "minute"}`;
     }
     // If less than a day ago
     if (diffInSeconds < 86400) {
       const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+      return `acum ${hours} ${hours === 1 ? "oră" : "ore"}`;
     }
     // If less than a week ago
     if (diffInSeconds < 604800) {
       const days = Math.floor(diffInSeconds / 86400);
-      return `${days} ${days === 1 ? "day" : "days"} ago`;
+      return `acum ${days} ${days === 1 ? "zi" : "zile"}`;
     }
     // Otherwise return the date
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("ro-RO", {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric",
     });
   };
@@ -193,7 +193,7 @@ const CreateComment = () => {
       className="flex w-full flex-col items-end justify-start gap-2"
     >
       <textarea
-        placeholder="Add a comment..."
+        placeholder="Adaugă un comentariu..."
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         className="h-32 w-full rounded-lg border border-primary bg-background p-4 text-text outline-none"
@@ -206,7 +206,7 @@ const CreateComment = () => {
           type="submit"
           className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 font-bold text-background"
         >
-          Post
+          Postează
         </button>
       )}
     </form>
