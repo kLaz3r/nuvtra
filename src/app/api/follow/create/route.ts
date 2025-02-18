@@ -1,7 +1,8 @@
 import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { createNotification } from "~/lib/notifications";
 import { db } from "~/server/db";
-import { follows } from "~/server/db/schema";
+import { follows, users } from "~/server/db/schema";
 
 type Follow = {
   followerId: string;
@@ -46,6 +47,18 @@ export async function POST(req: Request) {
         followingId,
       })
       .returning();
+
+    // Create notification for the user being followed
+    const follower = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, followerId),
+    });
+
+    await createNotification({
+      type: "FOLLOW",
+      userId: followingId,
+      createdById: followerId,
+      message: `${follower?.username} started following you`,
+    });
 
     return NextResponse.json(
       { message: "Follow successful", follow: newFollow[0] },

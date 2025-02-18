@@ -1,34 +1,37 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "~/components/ui/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
 
-// Add the Notification type
+// Update Notification type to match database schema
 type Notification = {
   id: string;
-  type: "like" | "comment" | "follow" | "mention";
-  content: string;
-  createdAt: Date;
-  read: boolean;
+  type: "LIKE" | "COMMENT" | "FOLLOW";
+  message: string;
+  isRead: boolean;
+  timestamp: Date;
+  creator: {
+    id: string;
+    username: string;
+    avatar: string | null;
+  };
 };
 
 function NotificationItem({ notification }: { notification: Notification }) {
   const getNotificationIcon = (type: Notification["type"]) => {
     switch (type) {
-      case "like":
+      case "LIKE":
         return <HeartIcon />;
-      case "comment":
+      case "COMMENT":
         return <CommentIcon />;
-      case "follow":
+      case "FOLLOW":
         return <UserIcon />;
-      case "mention":
-        return <AtIcon />;
       default:
         return null;
     }
@@ -37,16 +40,16 @@ function NotificationItem({ notification }: { notification: Notification }) {
   return (
     <div
       className={`hover:bg-muted flex items-start gap-3 rounded-lg p-3 transition-colors ${
-        !notification.read ? "bg-muted/50" : ""
+        !notification.isRead ? "bg-muted/50" : ""
       }`}
     >
       <div className="mt-1 text-primary">
         {getNotificationIcon(notification.type)}
       </div>
       <div className="flex flex-col gap-1">
-        <p className="text-sm">{notification.content}</p>
+        <p className="text-sm">{notification.message}</p>
         <span className="text-muted-foreground text-xs">
-          {new Date(notification.createdAt).toLocaleDateString("en-US", {
+          {new Date(notification.timestamp).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             hour: "numeric",
@@ -127,32 +130,37 @@ const AtIcon = () => (
 export function NavbarWrapper() {
   const [searchInput, setSearchInput] = useState("");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
+  const { user } = useUser();
 
-  // Mock notifications data - replace with actual data from your database
-  const mockNotifications: Notification[] = [
-    {
-      id: "1",
-      type: "like",
-      content: "John Doe liked your post",
-      createdAt: new Date(),
-      read: false,
-    },
-    {
-      id: "2",
-      type: "comment",
-      content: "Jane Smith commented on your post",
-      createdAt: new Date(),
-      read: true,
-    },
-    {
-      id: "3",
-      type: "follow",
-      content: "Alex Johnson started following you",
-      createdAt: new Date(),
-      read: false,
-    },
-  ];
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!user) return;
+
+      try {
+        const response = await fetch("/api/notifications/get", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user.id }),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch notifications");
+
+        const data = await response.json();
+        setNotifications(data);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void fetchNotifications();
+  }, [user, isNotificationsOpen]); // Refetch when notifications panel is opened
 
   if (pathname === "/" || pathname === "/sign-in") return null;
 
@@ -181,7 +189,7 @@ export function NavbarWrapper() {
             <PopoverPrimitive.Trigger asChild>
               <button className="relative">
                 <BellIconSVG />
-                {mockNotifications.some((n) => !n.read) && (
+                {notifications.some((n) => !n.isRead) && (
                   <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
                 )}
               </button>
@@ -204,13 +212,17 @@ export function NavbarWrapper() {
                     Notifications
                   </h2>
                   <ScrollArea className="h-[min(60vh,400px)]">
-                    {mockNotifications.length === 0 ? (
+                    {isLoading ? (
+                      <p className="text-muted-foreground text-center text-sm">
+                        Loading notifications...
+                      </p>
+                    ) : notifications.length === 0 ? (
                       <p className="text-muted-foreground text-center text-sm">
                         No notifications yet
                       </p>
                     ) : (
                       <div className="flex flex-col gap-2">
-                        {mockNotifications.map((notification) => (
+                        {notifications.map((notification) => (
                           <NotificationItem
                             key={notification.id}
                             notification={notification}
