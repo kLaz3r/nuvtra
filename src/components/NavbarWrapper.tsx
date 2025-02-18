@@ -9,14 +9,13 @@ import { Input } from "~/components/ui/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
 
-// Update Notification type to match database schema
 type Notification = {
   id: string;
   type: "LIKE" | "COMMENT" | "FOLLOW";
   message: string;
   isRead: boolean;
   timestamp: Date;
-  postId: string | null; // Make postId explicitly nullable since it's optional in the schema
+  postId: string | null;
   creator: {
     id: string;
     username: string;
@@ -42,7 +41,6 @@ function NotificationItem({ notification }: { notification: Notification }) {
 
   const handleClick = async () => {
     try {
-      // Mark notification as read
       await fetch("/api/notifications/mark-read", {
         method: "POST",
         headers: {
@@ -51,12 +49,10 @@ function NotificationItem({ notification }: { notification: Notification }) {
         body: JSON.stringify({ notificationId: notification.id }),
       });
 
-      // Navigate based on notification type
       switch (notification.type) {
         case "LIKE":
         case "COMMENT":
           if (notification.postId) {
-            // Only navigate if postId exists
             router.push(`/post/${notification.postId}`);
           }
           break;
@@ -64,8 +60,8 @@ function NotificationItem({ notification }: { notification: Notification }) {
           router.push(`/user/${notification.creator.id}`);
           break;
       }
-    } catch (error) {
-      console.error("Error handling notification click:", error);
+    } catch {
+      setIsNotificationsOpen(false);
     }
   };
 
@@ -183,10 +179,9 @@ export function NavbarWrapper() {
 
         if (!response.ok) throw new Error("Failed to fetch notifications");
 
-        const data = await response.json();
+        const data = (await response.json()) as Notification[];
         setNotifications(data);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
+      } catch {
         setNotifications([]);
       } finally {
         setIsLoading(false);
@@ -194,7 +189,7 @@ export function NavbarWrapper() {
     };
 
     void fetchNotifications();
-  }, [user, isNotificationsOpen]); // Refetch when notifications panel is opened
+  }, [user, isNotificationsOpen]);
 
   if (pathname === "/" || pathname === "/sign-in") return null;
 

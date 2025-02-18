@@ -161,7 +161,7 @@ export default async function UserProfile({
                     <div className="flex cursor-pointer items-center gap-2">
                       <Image
                         className="rounded-full"
-                        src={follower.avatar || "/default-avatar.png"}
+                        src={follower.avatar ?? "/default-avatar.png"}
                         alt={`${follower.username}'s avatar`}
                         width={40}
                         height={40}
@@ -190,7 +190,7 @@ export default async function UserProfile({
                     <div className="flex cursor-pointer items-center gap-2">
                       <Image
                         className="rounded-full"
-                        src={following.avatar || "/default-avatar.png"}
+                        src={following.avatar ?? "/default-avatar.png"}
                         alt={`${following.username}'s avatar`}
                         width={40}
                         height={40}

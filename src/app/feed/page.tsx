@@ -3,35 +3,8 @@ import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import InfinitePosts from "~/components/InfinitePosts.client";
-import { type Post } from "~/components/Post";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { UploadButton } from "~/utils/uploadthing";
-
-export type PostProps = {
-  id: string;
-  content: string;
-  imageUrl: string;
-  timestamp: string;
-  authorId: string;
-  comments: [];
-  likes: [];
-  author: User;
-};
-
-const FeedPage = () => {
-  const { user } = useUser();
-
-  if (!user) {
-    return null;
-  }
-
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-start gap-4 bg-background px-2 py-6 text-text">
-      <CreatePost />
-      <InfinitePosts />
-    </div>
-  );
-};
 
 export type FormData = {
   authorId: string;
@@ -47,6 +20,21 @@ type User = {
   createdAt: string;
   location: string;
   avatar: string | null;
+};
+
+const FeedPage = () => {
+  const { user } = useUser();
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-start gap-4 bg-background px-2 py-6 text-text">
+      <CreatePost />
+      <InfinitePosts />
+    </div>
+  );
 };
 
 const CreatePost = () => {
@@ -75,17 +63,16 @@ const CreatePost = () => {
 
         const data = (await response.json()) as User;
         setCurrentUser(data);
-      } catch (error) {
+      } catch {
         setCurrentUser(null);
       }
     }
     void getData();
 
-    setFormData({
+    setFormData((prev) => ({
+      ...prev,
       authorId: user!.id,
-      bodyText: formData.bodyText,
-      image: formData.image,
-    });
+    }));
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,7 +90,7 @@ const CreatePost = () => {
         throw new Error("Failed to create post");
       }
       window.location.reload();
-    } catch (error) {
+    } catch {
       // Failed silently as the user will see the post didn't appear
     }
   };

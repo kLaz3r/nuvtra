@@ -3,9 +3,13 @@ import { NextResponse } from "next/server";
 import { db } from "~/server/db";
 import { notifications } from "~/server/db/schema";
 
+type MarkReadRequest = {
+  notificationId: string;
+};
+
 export async function POST(request: Request) {
   try {
-    const { notificationId } = await request.json();
+    const { notificationId } = (await request.json()) as MarkReadRequest;
 
     if (!notificationId) {
       return NextResponse.json(
@@ -20,7 +24,7 @@ export async function POST(request: Request) {
       .where(eq(notifications.id, notificationId));
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return new Response(
       JSON.stringify({ error: "Failed to mark notification as read" }),
       {

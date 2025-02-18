@@ -1,12 +1,18 @@
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { createNotification } from "~/lib/notifications";
 import { db } from "~/server/db";
 import { comments, posts, users } from "~/server/db/schema";
 
+type CreateCommentRequest = {
+  postId: string;
+  content: string;
+  userId: string;
+};
+
 export async function POST(request: Request) {
   try {
-    const { postId, content, userId } = await request.json();
+    const { postId, content, userId } =
+      (await request.json()) as CreateCommentRequest;
 
     if (!postId || !content || !userId) {
       return NextResponse.json(
@@ -15,7 +21,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get post author to send notification
     const post = await db.query.posts.findFirst({
       where: (posts, { eq }) => eq(posts.id, postId),
       with: {
@@ -36,27 +41,27 @@ export async function POST(request: Request) {
       })
       .returning();
 
-    // Create notification for post author
     if (post.author.id !== userId) {
-      // Don't notify if user comments on their own post
       const user = await db.query.users.findFirst({
         where: (users, { eq }) => eq(users.id, userId),
       });
 
-      await createNotification({
-        type: "COMMENT",
-        userId: post.author.id,
-        createdById: userId,
-        message: `${user?.username} a comentat la postarea ta`,
-        postId: postId,
-      });
+      if (user) {
+        await createNotification({
+          type: "COMMENT",
+          userId: post.author.id,
+          createdById: userId,
+          message: `${user.username} a comentat la postarea ta`,
+          postId: postId,
+        });
+      }
     }
 
     return NextResponse.json({
       message: "Comment created successfully",
       comment: newComment[0],
     });
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Failed to create comment" }), {
       status: 500,
     });

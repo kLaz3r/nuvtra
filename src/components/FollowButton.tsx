@@ -4,13 +4,12 @@ import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface FollowButtonProps extends React.ComponentProps<"button"> {
-  children?: React.ReactNode;
+interface FollowButtonProps
+  extends Omit<React.ComponentProps<"button">, "children"> {
   followingId: string;
 }
 
 export default function FollowButton({
-  children,
   className,
   followingId,
   ...props
@@ -26,19 +25,19 @@ export default function FollowButton({
 
       try {
         const response = await fetch(
-          `/api/follow/check?followerId=${userId}&followingId=${followingId}`,
+          `/api/follow/check?followerId=${String(userId)}&followingId=${String(followingId)}`,
         );
         if (!response.ok) {
           throw new Error("Failed to check follow status");
         }
         const data: { isFollowing: boolean } = await response.json();
         setIsFollowing(data.isFollowing);
-      } catch (error) {
+      } catch {
         setIsFollowing(false);
       }
     };
 
-    checkFollowStatus();
+    void checkFollowStatus();
   }, [user?.id, userId, followingId]);
 
   const handleToggleFollow = async () => {
@@ -65,7 +64,7 @@ export default function FollowButton({
       }
 
       setIsFollowing(!isFollowing);
-    } catch (error) {
+    } catch {
       setIsLoading(false);
     }
   };

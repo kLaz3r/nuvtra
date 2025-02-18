@@ -51,7 +51,7 @@ export default async function FollowingPage({
               className="flex items-center gap-4 rounded p-2 hover:bg-neutral-800"
             >
               <Image
-                src={following!.avatar || "/default-avatar.png"}
+                src={following!.avatar ?? "/default-avatar.png"}
                 alt={`${following!.username}'s avatar`}
                 width={60}
                 height={60}
