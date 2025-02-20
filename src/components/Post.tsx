@@ -36,10 +36,17 @@ export const Post = ({ post }: { post: Post }) => {
     return null;
   }
 
+  // Transform likes array to match InteractionButtons expected type
+  const transformedLikes = (post.likes || []).map((userId) => ({
+    id: `${post.id}-${userId}`, // Generate a unique ID
+    userId,
+    postId: post.id,
+  }));
+
   return (
     <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
       <div className="flex w-full items-center justify-between">
-        <a href={`/user/${post.authorId}`} className="flex items-center gap-4">
+        <a href={`/user/${post.author.id}`} className="flex items-center gap-4">
           <Avatar>
             <AvatarImage src={post.author.avatar ?? "/default-avatar.png"} />
             <AvatarFallback>{post.author.username[0]}</AvatarFallback>
@@ -47,17 +54,17 @@ export const Post = ({ post }: { post: Post }) => {
           <h2 className="text-lg font-semibold">{post.author.username}</h2>
         </a>
         <InteractionButtons
-          likes={post.likes || []}
+          likes={transformedLikes}
           postId={post.id}
           commentsNum={post.comments.length}
           mediaQuery="hidden md:flex"
         />
       </div>
       <p>{post.content}</p>
-      {post.imageUrl && (
+      {post.image && (
         <div className="relative h-96 w-full">
           <Image
-            src={post.imageUrl}
+            src={post.image}
             alt="post image"
             fill
             style={{ objectFit: "contain" }}
@@ -65,7 +72,7 @@ export const Post = ({ post }: { post: Post }) => {
         </div>
       )}
       <InteractionButtons
-        likes={post.likes || []}
+        likes={transformedLikes}
         postId={post.id}
         commentsNum={post.comments.length}
         mediaQuery="md:hidden"

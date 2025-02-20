@@ -7,7 +7,7 @@ export default async function SearchPage({
   searchParams,
 }: {
   searchParams: { q?: string };
-}) {
+}): Promise<JSX.Element> {
   // Retrieve the search query from the URL; default to an empty string if not provided
   const searchQuery = searchParams.q ?? "";
 

@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// don't ask
+
 import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { db } from "~/server/db";
 import { posts } from "~/server/db/schema";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { "post-id": string } },
-) {
+export async function GET(request: NextRequest, context: any) {
   try {
     const post = await db.query.posts.findFirst({
-      where: eq(posts.id, params["post-id"]),
+      where: eq(posts.id, context.params["post-id"]),
       with: {
         author: {
           columns: {
