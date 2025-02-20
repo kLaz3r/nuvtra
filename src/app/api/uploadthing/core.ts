@@ -3,7 +3,8 @@ import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+// Update the auth function to accept any type since we're using a fake implementation
+const auth = () => ({ id: "fakeId" });
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -21,7 +22,7 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async (_req) => {
       // This code runs on your server before upload
-      const user = auth(_req);
+      const user = auth();
 
       // If you throw, the user will not be able to upload
       // eslint-disable-next-line @typescript-eslint/only-throw-error

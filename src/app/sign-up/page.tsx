@@ -56,7 +56,9 @@ const SignUpPage = () => {
       }
 
       router.push("/feed");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleChange =

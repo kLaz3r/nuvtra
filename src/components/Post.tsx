@@ -15,16 +15,20 @@ export type User = {
 export type Post = {
   id: string;
   content: string;
-  imageUrl?: string | null;
-  timestamp: Date;
-  authorId: string;
-  comments: unknown[];
-  likes: {
-    id: string;
-    userId: string;
-    postId: string;
-  }[];
+  image: string | null;
+  createdAt: string;
   author: User;
+  comments: {
+    id: string;
+    content: string;
+    timestamp: string;
+    author: {
+      id: string;
+      username: string;
+      avatar: string | null;
+    };
+  }[];
+  likes: string[];
 };
 
 export const Post = ({ post }: { post: Post }) => {

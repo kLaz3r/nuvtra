@@ -13,15 +13,8 @@ const Post = dynamic(
 export type PostType = {
   id: string;
   content: string;
-  imageUrl?: string | null;
-  timestamp: Date;
-  authorId: string;
-  comments: unknown[];
-  likes: {
-    id: string;
-    userId: string;
-    postId: string;
-  }[];
+  image: string | null;
+  createdAt: string;
   author: {
     id: string;
     username: string;
@@ -31,6 +24,17 @@ export type PostType = {
     location: string;
     createdAt: string;
   };
+  comments: {
+    id: string;
+    content: string;
+    timestamp: string;
+    author: {
+      id: string;
+      username: string;
+      avatar: string | null;
+    };
+  }[];
+  likes: string[];
 };
 
 export default function InfinitePosts() {
@@ -65,6 +69,7 @@ export default function InfinitePosts() {
         return [...prevPosts, ...newUniquePosts];
       });
     } catch (error) {
+      console.error(error);
       setHasMore(false);
       setLoading(false);
     }

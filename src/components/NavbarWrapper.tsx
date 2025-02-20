@@ -24,7 +24,13 @@ type Notification = {
   };
 };
 
-function NotificationItem({ notification }: { notification: Notification }) {
+function NotificationItem({
+  notification,
+  onClose,
+}: {
+  notification: Notification;
+  onClose: () => void;
+}) {
   const router = useRouter();
 
   const getNotificationIcon = (type: Notification["type"]) => {
@@ -42,13 +48,17 @@ function NotificationItem({ notification }: { notification: Notification }) {
 
   const handleClick = async () => {
     try {
-      await fetch("/api/notifications/mark-read", {
+      const response = await fetch("/api/notifications/mark-read", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ notificationId: notification.id }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to mark notification as read");
+      }
 
       switch (notification.type) {
         case "LIKE":
@@ -61,17 +71,20 @@ function NotificationItem({ notification }: { notification: Notification }) {
           router.push(`/user/${notification.creator.id}`);
           break;
       }
-    } catch {
-      setIsNotificationsOpen(false);
+    } catch (error) {
+      // Log error but continue with closing
+      console.error("Failed to handle notification:", error);
+      onClose();
     }
   };
 
   return (
     <button
-      onClick={handleClick}
-      className={`hover:bg-muted flex w-full items-start gap-3 rounded-lg p-3 transition-colors ${
-        !notification.isRead ? "bg-muted/50" : ""
-      }`}
+      onClick={() => void handleClick()}
+      className={cn(
+        "hover:bg-muted flex w-full items-start gap-3 rounded-lg p-3 transition-colors",
+        !notification.isRead && "bg-muted/50",
+      )}
     >
       <div className="mt-1 text-primary">
         {getNotificationIcon(notification.type)}
@@ -137,23 +150,6 @@ const UserIcon = () => (
   >
     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-
-const AtIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="12" cy="12" r="4" />
-    <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
   </svg>
 );
 
@@ -256,6 +252,7 @@ export function NavbarWrapper() {
                           <NotificationItem
                             key={notification.id}
                             notification={notification}
+                            onClose={() => setIsNotificationsOpen(false)}
                           />
                         ))}
                       </div>

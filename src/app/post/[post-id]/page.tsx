@@ -34,6 +34,7 @@ export default function PostPage() {
         setPost(data);
         setIsLoading(false);
       } catch (error) {
+        console.error(error);
         setIsLoading(false);
         setPost(null);
       }
@@ -175,6 +176,7 @@ const CreateComment = () => {
 
       window.location.reload();
     } catch (error) {
+      console.error(error);
       setError("Error creating comment");
     } finally {
       setIsLoading(false);
