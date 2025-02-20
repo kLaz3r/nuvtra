@@ -140,9 +140,21 @@ const CreatePost = () => {
         <div className="flex w-full items-center justify-between">
           {formData.image === null ? (
             <UploadButton
-              endpoint={"imageUploader"}
+              endpoint="imageUploader"
               onClientUploadComplete={(res): void => {
                 setFormData((prev) => ({ ...prev, image: res[0]!.url }));
+              }}
+              appearance={{
+                button:
+                  "bg-primary hover:bg-primary/80 text-background px-6 py-2 rounded-md whitespace-nowrap min-w-[120px]",
+                allowedContent: "hidden",
+              }}
+              content={{
+                button({ ready }) {
+                  if (ready) return "Încarcă poza";
+                  return "Se încarcă...";
+                },
+                allowedContent: "Poți încărca doar imagini",
               }}
             />
           ) : (
@@ -150,7 +162,7 @@ const CreatePost = () => {
           )}
           <button
             type="submit"
-            className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 font-bold text-background"
+            className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 font-bold text-background"
           >
             Posteaza
           </button>

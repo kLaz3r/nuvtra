@@ -9,6 +9,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
+import { UploadButton } from "~/utils/uploadthing";
 
 type FormData = {
   id: string;
@@ -21,7 +22,7 @@ type FormData = {
 
 const SettingsPage = () => {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded: clerkLoaded } = useUser();
   const [followers, setFollowers] = useState<number>(0);
   const [following, setFollowing] = useState<number>(0);
   const [formData, setFormData] = useState<FormData>({
@@ -33,6 +34,7 @@ const SettingsPage = () => {
     avatar: null,
   });
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     async function getData() {
@@ -94,6 +96,15 @@ const SettingsPage = () => {
         throw new Error("Failed to update user");
       }
 
+      // Update Clerk profile if avatar changed
+      if (clerkLoaded && user && formData.avatar !== user.imageUrl) {
+        await user.setProfileImage({
+          file: formData.avatar
+            ? await fetch(formData.avatar).then((r) => r.blob())
+            : null,
+        });
+      }
+
       // Optional: Add success notification
       console.log("User updated successfully");
       router.push("/feed");
@@ -119,8 +130,40 @@ const SettingsPage = () => {
             src={formData.avatar ?? "/default-avatar.png"}
             alt="avatar"
             fill
-            className="rounded-full"
+            className="rounded-full object-cover"
           />
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
+            <UploadButton
+              endpoint="imageUploader"
+              onUploadBegin={() => setIsUploading(true)}
+              onUploadError={() => {
+                setIsUploading(false);
+                setError("Failed to upload image");
+              }}
+              onClientUploadComplete={(res) => {
+                setIsUploading(false);
+                const uploadedFile = res?.[0];
+                if (uploadedFile?.url) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    avatar: uploadedFile.url,
+                  }));
+                }
+              }}
+              appearance={{
+                button:
+                  "bg-primary hover:bg-primary/80 text-background px-6 py-2 rounded-md whitespace-nowrap min-w-[120px]",
+                allowedContent: "hidden",
+              }}
+              content={{
+                button({ ready }) {
+                  if (ready) return "Schimbă poza";
+                  return "Se încarcă...";
+                },
+                allowedContent: "Poți încărca doar imagini",
+              }}
+            />
+          </div>
         </div>
         <div className="flex flex-col items-start justify-start gap-2">
           <h1 className="text-4xl font-semibold md:text-6xl">
