@@ -8,9 +8,9 @@ import { follows, users } from "~/server/db/schema";
 export default async function FollowingPage({
   params,
 }: {
-  params: { "user-id": string };
+  params: Promise<{ "user-id": string }>;
 }) {
-  const userId = params["user-id"];
+  const { "user-id": userId } = await params;
 
   // Fetch the current user's details for context (e.g. page title)
   const user = await db.query.users.findFirst({

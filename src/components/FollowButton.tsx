@@ -86,7 +86,7 @@ export default function FollowButton({
       disabled={isLoading}
       {...props}
     >
-      {isLoading ? "Loading..." : isFollowing ? "Unfollow" : "Follow"}
+      {isLoading ? "Loading..." : isFollowing ? "Nu urmari" : "Urmărește"}
     </button>
   );
 }

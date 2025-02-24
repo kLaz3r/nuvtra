@@ -6,10 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string };
-}): Promise<JSX.Element> {
-  // Retrieve the search query from the URL; default to an empty string if not provided
-  const searchQuery = searchParams.q ?? "";
+  searchParams: Promise<{ q?: string }>;
+}) {
+  // Await the searchParams promise to get the actual value
+  const { q } = await searchParams;
+  const searchQuery = q ?? "";
 
   // Get the base URL from an environment variable or default to localhost.
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";

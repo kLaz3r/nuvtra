@@ -62,7 +62,19 @@ export default function PostPage() {
       <div className="flex w-full max-w-[650px] flex-col items-center justify-between gap-4">
         <Post post={post} />
         <CreateComment />
-        <Comments comments={post.comments} />
+        <Comments
+          comments={post.comments.map((comment) => ({
+            id: comment.id,
+            content: comment.content,
+            timestamp: comment.timestamp.toString(),
+            author: {
+              id: comment.author.id,
+              username: comment.author.username,
+              avatar: comment.author.avatar,
+              location: comment.author.location ?? null,
+            },
+          }))}
+        />
       </div>
     </div>
   );
@@ -77,6 +89,7 @@ type CommentsProps = {
       id: string;
       username: string;
       avatar: string | null;
+      location?: string | null;
     };
   }[];
 };

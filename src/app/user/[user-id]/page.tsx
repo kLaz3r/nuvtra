@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { eq } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +15,7 @@ export default async function UserProfile({
   params: Promise<string>;
 }) {
   const slug = await params;
-  const userIdSlug = slug["user-id"] as string;
+  const userIdSlug = (slug as unknown as { "user-id": string })["user-id"];
 
   const user = await db.query.users.findFirst({
     where: eq(users.id, userIdSlug),
@@ -80,6 +81,7 @@ export default async function UserProfile({
                   id: true,
                   username: true,
                   avatar: true,
+                  location: true,
                 },
               },
             },
@@ -87,7 +89,33 @@ export default async function UserProfile({
           likes: true,
         },
       });
-      return fullPost;
+
+      // Check if fullPost is defined
+      if (!fullPost) return null; // Return null if fullPost is undefined
+
+      // Map the properties to match the Post type
+      return {
+        id: fullPost.id,
+        content: fullPost.content,
+        image: fullPost.imageUrl, // Map imageUrl to image
+        createdAt: new Date(fullPost.timestamp), // Convert timestamp string to Date
+        authorId: fullPost.authorId,
+        comments: fullPost.comments.map((comment) => ({
+          id: comment.id,
+          content: comment.content,
+          timestamp: comment.timestamp,
+          authorId: comment.authorId,
+          postId: comment.postId,
+          author: {
+            id: comment.author.id,
+            username: comment.author.username,
+            avatar: comment.author.avatar,
+            location: comment.author.location ?? null,
+          },
+        })),
+        likes: fullPost.likes.map((like) => like.userId), // Extract user IDs from likes
+        author: fullPost.author,
+      };
     }),
   );
 
@@ -98,7 +126,7 @@ export default async function UserProfile({
       <div className="my-6 flex items-center gap-4 md:gap-6">
         <div className="relative h-28 w-28 md:h-48 md:w-48">
           <Image
-            src={user.avatar ?? null}
+            src={user.avatar ?? "/default-avatar.png"}
             alt="avatar"
             fill
             className="rounded-full"
@@ -126,9 +154,7 @@ export default async function UserProfile({
           <FollowButton
             followingId={user.id}
             className="mt-2 rounded-md bg-gradient-to-r from-primary to-secondary px-6 py-2 text-lg font-semibold text-white transition-transform hover:scale-105"
-          >
-            Urmărește
-          </FollowButton>
+          ></FollowButton>
         </div>
       </div>
       {/* <FollowersFollwingTable userId={user.id} /> */}
@@ -138,7 +164,7 @@ export default async function UserProfile({
           <div className="absolute inset-0 rounded-md bg-gradient-to-r from-primary to-secondary"></div>
           <Textarea
             className="relative m-[1px] min-h-32 w-[calc(100%-2px)] bg-background"
-            value={user.bio === "" ? "Utilizatorul nu are biografie" : user.bio}
+            value={user.bio ?? "Utilizatorul nu are biografie"}
             readOnly
           />
         </div>
@@ -204,9 +230,9 @@ export default async function UserProfile({
         </div>
       </div>
       <div className="mt-9 flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-background px-2 py-6 text-text">
-        {validPosts.map((post) => (
-          <Post key={post!.id} post={post!} />
-        ))}
+        {validPosts.map((post) =>
+          post ? <Post key={post.id} post={post} /> : null,
+        )}
       </div>
     </main>
   );

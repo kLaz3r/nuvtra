@@ -32,6 +32,7 @@ export type PostType = {
       id: string;
       username: string;
       avatar: string | null;
+      location: string | null;
     };
   }[];
   likes: string[];
@@ -100,7 +101,23 @@ export default function InfinitePosts() {
   return (
     <div className="flex w-full max-w-[650px] flex-col items-center gap-4">
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post
+          key={post.id}
+          post={{
+            ...post,
+            createdAt: new Date(post.createdAt),
+            comments: post.comments.map((comment) => ({
+              ...comment,
+              timestamp: new Date(comment.timestamp),
+              authorId: comment.author.id,
+              postId: post.id,
+              author: {
+                ...comment.author,
+                location: comment.author.location ?? null,
+              },
+            })),
+          }}
+        />
       ))}
       {loading && <span className="loader"></span>}
       {/* Sentinel element */}

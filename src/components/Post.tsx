@@ -6,9 +6,9 @@ export type User = {
   id: string;
   username: string;
   email: string;
-  bio: string;
-  createdAt: string;
-  location: string;
+  bio: string | null;
+  createdAt: string | Date;
+  location: string | null;
   avatar: string | null;
 };
 
@@ -16,13 +16,16 @@ export type Post = {
   id: string;
   content: string;
   image: string | null;
-  createdAt: string;
+  createdAt: Date;
   author: User;
   comments: {
     id: string;
     content: string;
-    timestamp: string;
+    timestamp: Date;
+    authorId: string | Date;
+    postId: string;
     author: {
+      location: string | null;
       id: string;
       username: string;
       avatar: string | null;
