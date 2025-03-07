@@ -10,7 +10,7 @@ export const env = createEnv({
     POSTGRES_URL: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
-      .default("development"),
+      .default("production"),
   },
 
   /**
