@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -153,6 +153,26 @@ const UserIcon = () => (
   </svg>
 );
 
+const LogoutIconSVG = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="25"
+      viewBox="0 0 24 25"
+      fill="none"
+      stroke="rgba(120, 140, 173, 1)"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  );
+};
+
 export function NavbarWrapper() {
   const [searchInput, setSearchInput] = useState("");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -160,6 +180,8 @@ export function NavbarWrapper() {
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
   const { user } = useUser();
+  const { signOut } = useClerk();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -187,6 +209,9 @@ export function NavbarWrapper() {
 
     void fetchNotifications();
   }, [user, isNotificationsOpen]);
+  const handleLogout = () => {
+    void signOut(() => router.push("/sign-in"));
+  };
 
   if (pathname === "/" || pathname === "/sign-in") return null;
 
@@ -266,6 +291,9 @@ export function NavbarWrapper() {
           <Link href="/settings">
             <SettingsIconSVG />
           </Link>
+          <button onClick={handleLogout}>
+            <LogoutIconSVG />
+          </button>
           <Link href="/settings" className="relative h-10 w-10">
             <Avatar>
               <AvatarImage
