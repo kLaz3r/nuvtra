@@ -288,9 +288,6 @@ export function NavbarWrapper() {
               </PopoverPrimitive.Content>
             </PopoverPrimitive.Portal>
           </PopoverPrimitive.Root>
-          <Link href="/settings">
-            <SettingsIconSVG />
-          </Link>
           <button onClick={handleLogout}>
             <LogoutIconSVG />
           </button>
