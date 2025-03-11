@@ -15,7 +15,7 @@ export type PostType = {
   content: string;
   image: string | null;
   createdAt: string;
-  author: {
+  author?: {
     id: string;
     username: string;
     avatar: string | null;
@@ -24,16 +24,11 @@ export type PostType = {
     location: string;
     createdAt: string;
   };
-  comments: {
+  comments?: {
     id: string;
     content: string;
     timestamp: string;
-    author: {
-      id: string;
-      username: string;
-      avatar: string | null;
-      location: string | null;
-    };
+    authorId: string;
   }[];
   likes: string[];
 };
@@ -106,14 +101,36 @@ export default function InfinitePosts() {
           post={{
             ...post,
             createdAt: new Date(post.createdAt),
-            comments: post.comments.map((comment) => ({
-              ...comment,
+            author: post.author
+              ? {
+                  id: post.author.id,
+                  username: post.author.username,
+                  email: post.author.email,
+                  bio: post.author.bio,
+                  location: post.author.location,
+                  avatar: post.author.avatar,
+                  createdAt: post.author.createdAt,
+                }
+              : {
+                  id: "",
+                  username: "",
+                  email: "",
+                  bio: "",
+                  location: "",
+                  avatar: null,
+                  createdAt: "",
+                },
+            comments: post.comments!.map((comment) => ({
+              id: comment.id,
+              content: comment.content,
               timestamp: new Date(comment.timestamp),
-              authorId: comment.author.id,
+              authorId: comment.authorId,
               postId: post.id,
               author: {
-                ...comment.author,
-                location: comment.author.location ?? null,
+                id: post.author?.id ?? "",
+                username: post.author?.username ?? "",
+                avatar: post.author?.avatar ?? null,
+                location: post.author?.location ?? null,
               },
             })),
           }}
