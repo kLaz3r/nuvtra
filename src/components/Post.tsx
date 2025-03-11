@@ -15,7 +15,7 @@ export type User = {
 export type Post = {
   id: string;
   content: string;
-  image: string | null;
+  imageUrl: string | null;
   createdAt: Date;
   author: User;
   comments: {
@@ -43,16 +43,7 @@ export const Post = ({ post }: { post: Post }) => {
     return null;
   }
 
-  // Transform likes array to match InteractionButtons expected type
-  // Make sure post.likes is an array before mapping
-  // const transformedLikes = Array.isArray(post.likes)
-  //   ? post.likes.map((userId) => ({
-  //       id: `${post.id}-${userId}`, // Generate a unique ID
-  //       userId,
-  //       postId: post.id,
-  //     }))
-  //   : [];
-
+  console.log(post);
   return (
     <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
       <div className="flex w-full items-center justify-between">
@@ -71,10 +62,10 @@ export const Post = ({ post }: { post: Post }) => {
         />
       </div>
       <p>{post.content}</p>
-      {post.image && (
+      {post.imageUrl && (
         <div className="relative h-96 w-full">
           <Image
-            src={post.image}
+            src={post.imageUrl}
             alt="post image"
             fill
             style={{ objectFit: "contain" }}
