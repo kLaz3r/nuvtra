@@ -19,6 +19,20 @@ async function like(userId: string, postId: string) {
   return response;
 }
 
+async function unlike(userId: string, postId: string) {
+  const response = await fetch("/api/like/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId, postId }),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to delete like");
+  }
+  return response;
+}
+
 type InteractionButtonsProps = {
   postId: string;
   mediaQuery: string;
@@ -44,27 +58,42 @@ export default function InteractionButtons({
   useEffect(() => {
     if (likes.some((like) => like.userId === user?.id)) {
       setLiked(true);
+    } else {
+      setLiked(false);
     }
     setLikesNum(likes.length);
   }, [likes, user?.id]);
 
-  const handleLike = async () => {
-    setLikesNum(likes.length + 1);
-    setLiked(true);
-    try {
-      await like(user?.id ?? "", postId);
-    } catch (error) {
-      console.error(error);
-      setLiked(liked);
-      setLikesNum(likes.length);
+  const handleLikeToggle = async () => {
+    if (liked) {
+      // Unlike the post
+      setLikesNum(likesNum - 1);
+      setLiked(false);
+      try {
+        await unlike(user?.id ?? "", postId);
+      } catch (error) {
+        console.error(error);
+        setLiked(true);
+        setLikesNum(likesNum);
+      }
+    } else {
+      // Like the post
+      setLikesNum(likesNum + 1);
+      setLiked(true);
+      try {
+        await like(user?.id ?? "", postId);
+      } catch (error) {
+        console.error(error);
+        setLiked(false);
+        setLikesNum(likesNum);
+      }
     }
   };
 
   return (
     <div className={cn("flex items-center gap-4", mediaQuery)}>
       <button
-        onClick={handleLike}
-        disabled={liked}
+        onClick={handleLikeToggle}
         className={`${
           liked
             ? "border border-accent bg-background text-accent"

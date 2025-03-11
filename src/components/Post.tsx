@@ -31,7 +31,11 @@ export type Post = {
       avatar: string | null;
     };
   }[];
-  likes: string[];
+  likes: {
+    id: string;
+    userId: string;
+    postId: string;
+  }[];
 };
 
 export const Post = ({ post }: { post: Post }) => {
@@ -40,11 +44,14 @@ export const Post = ({ post }: { post: Post }) => {
   }
 
   // Transform likes array to match InteractionButtons expected type
-  const transformedLikes = (post.likes || []).map((userId) => ({
-    id: `${post.id}-${userId}`, // Generate a unique ID
-    userId,
-    postId: post.id,
-  }));
+  // Make sure post.likes is an array before mapping
+  // const transformedLikes = Array.isArray(post.likes)
+  //   ? post.likes.map((userId) => ({
+  //       id: `${post.id}-${userId}`, // Generate a unique ID
+  //       userId,
+  //       postId: post.id,
+  //     }))
+  //   : [];
 
   return (
     <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
@@ -57,7 +64,7 @@ export const Post = ({ post }: { post: Post }) => {
           <h2 className="text-lg font-semibold">{post.author.username}</h2>
         </a>
         <InteractionButtons
-          likes={transformedLikes}
+          likes={post.likes}
           postId={post.id}
           commentsNum={post.comments.length}
           mediaQuery="hidden md:flex"
@@ -75,7 +82,7 @@ export const Post = ({ post }: { post: Post }) => {
         </div>
       )}
       <InteractionButtons
-        likes={transformedLikes}
+        likes={post.likes}
         postId={post.id}
         commentsNum={post.comments.length}
         mediaQuery="md:hidden"
