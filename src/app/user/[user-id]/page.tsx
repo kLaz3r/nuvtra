@@ -97,7 +97,7 @@ export default async function UserProfile({
       return {
         id: fullPost.id,
         content: fullPost.content,
-        image: fullPost.imageUrl, // Map imageUrl to image
+        imageUrl: fullPost.imageUrl, // Map imageUrl to image
         createdAt: new Date(fullPost.timestamp), // Convert timestamp string to Date
         authorId: fullPost.authorId,
         comments: fullPost.comments.map((comment) => ({
@@ -113,7 +113,7 @@ export default async function UserProfile({
             location: comment.author.location ?? null,
           },
         })),
-        likes: fullPost.likes.map((like) => like.userId), // Extract user IDs from likes
+        likes: fullPost.likes, // Extract user IDs from likes
         author: fullPost.author,
       };
     }),
