@@ -148,7 +148,7 @@ const CreatePost = ({ currentUser }: { currentUser: User }) => {
               }}
               appearance={{
                 button:
-                  "bg-primary hover:bg-primary/80 text-black font-bold px-6 py-2 rounded-md whitespace-nowrap min-w-[120px]",
+                  "bg-primary hover:bg-primary/80 !text-black font-bold px-6 py-2 rounded-md whitespace-nowrap min-w-[120px]",
                 allowedContent: "hidden",
               }}
               content={{
