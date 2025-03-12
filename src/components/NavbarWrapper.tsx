@@ -227,10 +227,10 @@ export function NavbarWrapper() {
           setSearchInput={setSearchInput}
         />
         <div className="flex w-[164px] items-center justify-end gap-4">
-          <Link href="/">
+          <Link aria-label="Home" href="/">
             <HomeIconSVG />
           </Link>
-          <Link href="/search">
+          <Link aria-label="Search" href="/search">
             <SearchIconSVG />
           </Link>
           <PopoverPrimitive.Root
@@ -238,7 +238,7 @@ export function NavbarWrapper() {
             onOpenChange={setIsNotificationsOpen}
           >
             <PopoverPrimitive.Trigger asChild>
-              <button className="relative">
+              <button className="relative" aria-label="notifications">
                 <BellIconSVG />
                 {notifications.some((n) => !n.isRead) && (
                   <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
@@ -288,7 +288,7 @@ export function NavbarWrapper() {
               </PopoverPrimitive.Content>
             </PopoverPrimitive.Portal>
           </PopoverPrimitive.Root>
-          <button onClick={handleLogout}>
+          <button aria-label="logout" onClick={handleLogout}>
             <LogoutIconSVG />
           </button>
           <Link href="/settings" className="relative h-10 w-10">

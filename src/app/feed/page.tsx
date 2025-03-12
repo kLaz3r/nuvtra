@@ -23,31 +23,15 @@ type User = {
 };
 
 const FeedPage = () => {
-  const { user } = useUser();
-
-  if (!user) {
-    return null;
-  }
-
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-start gap-4 bg-background px-2 py-6 text-text">
-      <CreatePost />
-      <InfinitePosts />
-    </div>
-  );
-};
-
-const CreatePost = () => {
-  const { user } = useUser();
+  const { isLoaded, user } = useUser();
+  const [loadingState, setLoadingState] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [formData, setFormData] = useState<FormData>({
-    authorId: user!.id,
-    bodyText: "",
-    image: null,
-  });
 
   useEffect(() => {
     async function getData() {
+      if (!isLoaded) {
+        return null;
+      }
       try {
         const response = await fetch("/api/users/get", {
           method: "POST",
@@ -63,17 +47,35 @@ const CreatePost = () => {
 
         const data = (await response.json()) as User;
         setCurrentUser(data);
+        setLoadingState(false);
       } catch {
         setCurrentUser(null);
       }
     }
     void getData();
-
-    setFormData((prev) => ({
-      ...prev,
-      authorId: user!.id,
-    }));
   }, [user]);
+
+  if (!currentUser) {
+    return null;
+  }
+  if (loadingState) {
+    return null;
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-start gap-4 bg-background px-2 py-6 text-text">
+      <CreatePost currentUser={currentUser} />
+      <InfinitePosts />
+    </div>
+  );
+};
+
+const CreatePost = ({ currentUser }: { currentUser: User }) => {
+  const [formData, setFormData] = useState<FormData>({
+    authorId: currentUser.id,
+    bodyText: "",
+    image: null,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,7 +148,7 @@ const CreatePost = () => {
               }}
               appearance={{
                 button:
-                  "bg-primary hover:bg-primary/80 text-background px-6 py-2 rounded-md whitespace-nowrap min-w-[120px]",
+                  "bg-primary hover:bg-primary/80 text-black font-bold px-6 py-2 rounded-md whitespace-nowrap min-w-[120px]",
                 allowedContent: "hidden",
               }}
               content={{

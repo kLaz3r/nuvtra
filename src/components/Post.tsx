@@ -43,7 +43,6 @@ export const Post = ({ post }: { post: Post }) => {
     return null;
   }
 
-  console.log(post);
   return (
     <div className="flex min-h-32 w-full max-w-[500px] flex-col items-start justify-start gap-4 rounded-lg bg-background p-6 shadow-post md:max-w-[650px]">
       <div className="flex w-full items-center justify-between">
