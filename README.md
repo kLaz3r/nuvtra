@@ -1,29 +1,145 @@
-# Create T3 App
+# NEXA - Social Media Platform
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+NEXA is a modern social media platform built with Next.js, TypeScript, and PostgreSQL. It enables users to connect, share posts, follow others, and engage through likes and comments.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **User Authentication**: Secure login and registration via Clerk
+- **Social Interactions**: Post creation, comments, likes, and follows
+- **Real-time Notifications**: Alerts for likes, comments, and new followers
+- **Profile Management**: Customizable user profiles with bio and avatar
+- **Search Functionality**: Find users and posts by keywords
+- **Responsive Design**: Optimized for both mobile and desktop
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Frontend**: Next.js 15, React 18, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Clerk
+- **File Storage**: UploadThing
+- **Styling**: Tailwind CSS with shadcn/ui components
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Prerequisites
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Node.js 18+ and pnpm
+- PostgreSQL database
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Environment Setup
 
-## How do I deploy this?
+Create a `.env` file in the root directory with the following variables:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```
+POSTGRES_URL=postgresql://postgres:password@localhost:5432/nexa
+NODE_ENV=development
+```
+
+### Database Setup
+
+Run the included script to start a PostgreSQL container:
+
+```bash
+chmod +x start-database.sh
+./start-database.sh
+```
+
+### Installation
+
+1. Install dependencies:
+
+```bash
+pnpm install
+```
+
+2. Generate and push the database schema:
+
+```bash
+pnpm db:generate
+pnpm db:push
+```
+
+### Development
+
+Start the development server:
+
+```bash
+pnpm dev
+```
+
+Visit `http://localhost:3000` to see the application.
+
+## Database Schema
+
+The application uses the following main tables:
+
+- `nexa_user`: User profiles and authentication
+- `nexa_post`: User-created content
+- `nexa_comment`: Comments on posts
+- `nexa_like`: Post likes
+- `nexa_follow`: User follow relationships
+- `nexa_notification`: System notifications
+
+## API Endpoints
+
+### Users
+
+- `POST /api/users/create`: Create a new user
+- `POST /api/users/update`: Update user profile
+- `POST /api/users/get`: Get user details
+
+### Posts
+
+- `POST /api/posts/create`: Create a new post
+- `GET /api/posts/get`: Get all posts with pagination
+- `GET /api/posts/get/[post-id]`: Get a specific post
+
+### Comments
+
+- `POST /api/comments/create`: Add a comment to a post
+
+### Notifications
+
+- `POST /api/notifications/get`: Get user notifications
+- `POST /api/notifications/mark-read`: Mark notification as read
+
+### Search
+
+- `GET /api/search/posts`: Search posts
+- `GET /api/search/users`: Search users
+
+### File Upload
+
+- `POST /api/uploadthing`: Handle file uploads
+
+## Project Structure
+
+- `/src/app`: Next.js app router pages and API routes
+- `/src/components`: Reusable React components
+- `/src/server/db`: Database schema and connection
+- `/src/styles`: Global CSS styles
+- `/src/lib`: Utility functions
+- `/drizzle`: Database migration files
+
+## Scripts
+
+- `pnpm build`: Build the application
+- `pnpm dev`: Start development server
+- `pnpm start`: Start production server
+- `pnpm check`: Run linting and type checking
+- `pnpm db:generate`: Generate database migrations
+- `pnpm db:push`: Push schema changes to database
+- `pnpm db:studio`: Open Drizzle Studio for database management
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a pull request
+
+## License
+
+This project is proprietary and not licensed for public use.
