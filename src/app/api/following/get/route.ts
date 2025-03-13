@@ -28,7 +28,15 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(following);
+    // Return response with caching headers
+    // Cache for 30 minutes on CDN and browser
+    return new NextResponse(JSON.stringify(following), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+      },
+    });
   } catch (error) {
     console.error("Error fetching following:", error);
     return NextResponse.json(

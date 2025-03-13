@@ -32,7 +32,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Return response with caching headers
+    // Cache for 1 hour on CDN and browser
+    return new NextResponse(JSON.stringify(user), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      },
+    });
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(

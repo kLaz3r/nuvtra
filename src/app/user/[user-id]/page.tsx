@@ -157,7 +157,6 @@ export default async function UserProfile({
           ></FollowButton>
         </div>
       </div>
-      {/* <FollowersFollwingTable userId={user.id} /> */}
       <div className="flex w-full max-w-96 flex-col items-start justify-start gap-2">
         <h1 className="text-2xl font-semibold">Bio</h1>
         <div className="relative w-full">

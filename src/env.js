@@ -18,7 +18,6 @@ export const env = createEnv({
     POSTGRES_DATABASE: z.string(),
     POSTGRES_URL_NO_SSL: z.string().url(),
     POSTGRES_PRISMA_URL: z.string().url(),
-    CLERK_PUBLISHABLE_KEY: z.string(),
     CLERK_SECRET_KEY: z.string(),
     UPLOADTHING_TOKEN: z.string(),
     NODE_ENV: z
@@ -46,7 +45,6 @@ export const env = createEnv({
     POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
     POSTGRES_URL_NO_SSL: process.env.POSTGRES_URL_NO_SSL,
     POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
-    CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
     NODE_ENV: process.env.NODE_ENV,
