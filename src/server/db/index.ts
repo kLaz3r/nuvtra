@@ -12,7 +12,19 @@ const globalForDb = globalThis as unknown as {
   conn: postgres.Sql | undefined;
 };
 
-const conn = globalForDb.conn ?? postgres(env.POSTGRES_URL);
+// Configure connection pool for production
+const connectionOptions = {
+  max: 10, // Maximum number of connections
+  idle_timeout: 30, // Connection timeout in seconds
+};
+
+const conn =
+  globalForDb.conn ??
+  postgres(
+    env.POSTGRES_URL,
+    env.NODE_ENV === "production" ? connectionOptions : undefined,
+  );
+
 if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });
