@@ -19,15 +19,15 @@ export default withUt({
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        text: "rgba(245, 241, 239, 1)",
-        accent: "rgba(120, 140, 173, 1)",
-        secondary: "rgba(66, 109, 98, 1)",
-        background: "rgba(10, 7, 6, 1)",
-        primary: "rgba(235, 94, 40, 1)",
+        text: "rgb(var(--foreground) / <alpha-value>)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
+        secondary: "rgb(var(--secondary) / <alpha-value>)",
+        background: "rgb(var(--background) / <alpha-value>)",
+        primary: "rgb(var(--primary) / <alpha-value>)",
       },
       backgroundImage: {
         "gradient-border":
-          "linear-gradient(to right, rgba(235, 94, 40, 1), rgba(66, 109, 98, 1))",
+          "linear-gradient(to right, rgb(var(--primary)), rgb(var(--secondary)))",
       },
     },
   },

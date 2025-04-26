@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { type Metadata } from "next";
 import Script from "next/script";
 import { NavbarWrapper } from "~/components/NavbarWrapper";
+import { ThemeProvider } from "~/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "NEXA",
@@ -40,7 +41,7 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <head>
           <meta name="application-name" content="NEXA" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -56,9 +57,16 @@ export default function RootLayout({
           <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         </head>
         <body className="bg-background text-text">
-          <NavbarWrapper />
-          {children}
-          <Script src="/sw-register.js" strategy="lazyOnload" />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NavbarWrapper />
+            {children}
+            <Script src="/sw-register.js" strategy="lazyOnload" />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
