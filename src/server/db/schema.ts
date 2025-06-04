@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 // Create a custom pgTable function with the prefix
-const pgTable = pgTableCreator((name) => `nexa_${name}`);
+const pgTable = pgTableCreator((name) => `nuvtra_${name}`);
 
 export const users = pgTable("user", {
   id: varchar("id", { length: 256 }).primaryKey().notNull().unique(),

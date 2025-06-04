@@ -8,5 +8,5 @@ export default {
   dbCredentials: {
     url: env.POSTGRES_URL,
   },
-  tablesFilter: ["nexa_*"],
+  tablesFilter: ["nuvtra_*"],
 } satisfies Config;

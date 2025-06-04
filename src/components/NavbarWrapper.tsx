@@ -221,7 +221,7 @@ export function NavbarWrapper() {
     <nav className="relative flex h-32 flex-col items-center justify-center gap-4 px-12 py-4 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gradient-to-r after:from-primary after:to-secondary md:h-20">
       <div className="flex w-full justify-between">
         <div className="w-[164px]">
-          <NexaSVG />
+          <NuvtraSVG />
         </div>
         <SearchInput
           mediaQuery="hidden md:flex"
@@ -397,7 +397,7 @@ const BellIconSVG = () => {
   );
 };
 
-const NexaSVG = () => {
+const NuvtraSVG = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

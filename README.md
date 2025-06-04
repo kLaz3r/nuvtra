@@ -1,6 +1,6 @@
-# NEXA - Social Media Platform
+# NUVTRA - Social Media Platform
 
-NEXA is a modern social media platform built with Next.js, TypeScript, and PostgreSQL. It enables users to connect, share posts, follow others, and engage through likes and comments.
+NUVTRA is a modern social media platform built with Next.js, TypeScript, and PostgreSQL. It enables users to connect, share posts, follow others, and engage through likes and comments.
 
 ## Features
 
@@ -32,7 +32,7 @@ NEXA is a modern social media platform built with Next.js, TypeScript, and Postg
 Create a `.env` file in the root directory with the following variables:
 
 ```
-POSTGRES_URL=postgresql://postgres:password@localhost:5432/nexa
+POSTGRES_URL=postgresql://postgres:password@localhost:5432/nuvtra
 NODE_ENV=development
 ```
 
@@ -74,12 +74,12 @@ Visit `http://localhost:3000` to see the application.
 
 The application uses the following main tables:
 
-- `nexa_user`: User profiles and authentication
-- `nexa_post`: User-created content
-- `nexa_comment`: Comments on posts
-- `nexa_like`: Post likes
-- `nexa_follow`: User follow relationships
-- `nexa_notification`: System notifications
+- `nuvtra_user`: User profiles and authentication
+- `nuvtra_post`: User-created content
+- `nuvtra_comment`: Comments on posts
+- `nuvtra_like`: Post likes
+- `nuvtra_follow`: User follow relationships
+- `nuvtra_notification`: System notifications
 
 ## API Endpoints
 

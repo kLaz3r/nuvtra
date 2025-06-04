@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-const CACHE_NAME = "nexa-cache-v1";
+const CACHE_NAME = "nuvtra-cache-v1";
 const urlsToCache = [
   "/",
   "/favicon.ico",

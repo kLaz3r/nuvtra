@@ -12,13 +12,13 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="text-text bg-background flex min-h-screen flex-col items-center justify-center">
-      <NexaLogoSVG />
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background text-text">
+      <NuvtraLogoSVG />
     </main>
   );
 }
 
-const NexaLogoSVG = () => {
+const NuvtraLogoSVG = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

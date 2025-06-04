@@ -3,10 +3,11 @@ const SignInPage = () => {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-clip px-12 text-text">
       <div className="absolute right-0 -z-10 h-[512px] w-[512px] translate-x-48 translate-y-64 cursor-none overflow-hidden opacity-20 md:h-[1024px] md:w-[1024px]">
-        <NexaSVG />
+        <NuvtraSVG />
       </div>
       <h1 className="text-center text-5xl font-bold md:text-6xl">
-        Bine ai venit pe <span className="font-black text-primary">NEXA</span>!
+        Bine ai venit pe <span className="font-black text-primary">NUVTRA</span>
+        !
       </h1>
       <div>
         <p className="max-w-2xl text-center text-lg md:text-xl">
@@ -36,7 +37,7 @@ const SignInPage = () => {
 
 export default SignInPage;
 
-const NexaSVG = () => {
+const NuvtraSVG = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 40" fill="none">
       <path

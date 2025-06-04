@@ -8,15 +8,15 @@ import { NavbarWrapper } from "~/components/NavbarWrapper";
 import { ThemeProvider } from "~/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "NEXA",
-  description: "Nexa | Legaturi fara limite",
+  title: "NUVTRA",
+  description: "Nuvtra | Legaturi fara limite",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   manifest: "/manifest.json",
   themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "NEXA",
+    title: "NUVTRA",
   },
   viewport: {
     width: "device-width",
@@ -43,13 +43,13 @@ export default function RootLayout({
     >
       <html lang="en" suppressHydrationWarning>
         <head>
-          <meta name="application-name" content="NEXA" />
+          <meta name="application-name" content="NUVTRA" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta
             name="apple-mobile-web-app-status-bar-style"
             content="default"
           />
-          <meta name="apple-mobile-web-app-title" content="NEXA" />
+          <meta name="apple-mobile-web-app-title" content="NUVTRA" />
           <meta name="format-detection" content="telephone=no" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="msapplication-TileColor" content="#000000" />

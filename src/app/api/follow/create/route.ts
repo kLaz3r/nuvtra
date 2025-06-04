@@ -15,6 +15,7 @@ export async function POST(req: Request) {
 
     // Validate input
     if (!followerId || !followingId) {
+      console.log("Missing required fields", followerId, followingId);
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
       );
 
     if (existingFollow.length > 0) {
+      console.log("Already following this user");
       return NextResponse.json(
         { error: "Already following this user" },
         { status: 400 },

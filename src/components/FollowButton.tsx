@@ -22,7 +22,6 @@ export default function FollowButton({
   useEffect(() => {
     const checkFollowStatus = async () => {
       if (!user?.id) return;
-
       try {
         const response = await fetch(
           `/api/follow/check?followerId=${String(userId)}&followingId=${String(followingId)}`,
@@ -58,6 +57,7 @@ export default function FollowButton({
           }),
         },
       );
+      console.log(response, userId, followingId);
 
       if (!response.ok) {
         throw new Error("Failed to toggle follow status");
