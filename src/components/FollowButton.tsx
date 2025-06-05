@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface FollowButtonProps
@@ -14,17 +14,19 @@ export default function FollowButton({
   followingId,
   ...props
 }: FollowButtonProps) {
-  const { userId } = useParams();
+  const params = useParams();
+  const userId = params["user-id"] as string;
   const { user, isLoaded } = useUser();
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const checkFollowStatus = async () => {
       if (!user?.id) return;
       try {
         const response = await fetch(
-          `/api/follow/check?followerId=${String(userId)}&followingId=${String(followingId)}`,
+          `/api/follow/check?followerId=${String(user.id)}&followingId=${String(followingId)}`,
         );
         if (!response.ok) {
           throw new Error("Failed to check follow status");
@@ -37,7 +39,7 @@ export default function FollowButton({
     };
 
     void checkFollowStatus();
-  }, [user?.id, userId, followingId]);
+  }, [user?.id, followingId]);
 
   const handleToggleFollow = async () => {
     if (!user?.id) return;
@@ -52,18 +54,20 @@ export default function FollowButton({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            followerId: userId,
+            followerId: user.id,
             followingId: followingId,
           }),
         },
       );
-      console.log(response, userId, followingId);
+      console.log(response, user.id, followingId);
 
       if (!response.ok) {
         throw new Error("Failed to toggle follow status");
       }
 
       setIsFollowing(!isFollowing);
+      setIsLoading(false);
+      router.refresh();
     } catch {
       setIsLoading(false);
     }
