@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
+import { useUser } from "@clerk/nextjs";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
@@ -38,6 +39,7 @@ export type PostType = {
 };
 
 export default function InfinitePosts() {
+  const { user } = useUser();
   const [posts, setPosts] = useState<PostType[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -50,7 +52,11 @@ export default function InfinitePosts() {
     const limit = 10;
     const skip = posts.length; // Use the current post count as the offset
     try {
-      const res = await fetch(`/api/posts/get?skip=${skip}&limit=${limit}`);
+      const res = await fetch(
+        `/api/posts/get?skip=${skip}&limit=${limit}${
+          user?.id ? `&userId=${user.id}` : ""
+        }`,
+      );
       if (!res.ok) {
         throw new Error("Failed to fetch posts");
       }
@@ -74,7 +80,7 @@ export default function InfinitePosts() {
       setHasMore(false);
       setLoading(false);
     }
-  }, [posts.length]);
+  }, [posts.length, user?.id]);
 
   // Load the first set of posts when the component mounts.
   useEffect(() => {
