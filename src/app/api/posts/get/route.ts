@@ -21,9 +21,7 @@ export async function GET(request: Request) {
     const limitParam = searchParams.get("limit");
     const userId = searchParams.get("userId");
 
-    // If we have a userId, get their followed users' posts first
     if (userId) {
-      // Get the IDs of users that the current user follows
       const followedUsers = await db
         .select({ followingId: follows.followingId })
         .from(follows)
@@ -31,7 +29,6 @@ export async function GET(request: Request) {
 
       const followedUserIds = followedUsers.map((f) => f.followingId);
 
-      // Get posts from followed users
       const followedPosts =
         followedUserIds.length > 0
           ? await db.query.posts.findMany({
@@ -45,15 +42,8 @@ export async function GET(request: Request) {
             })
           : [];
 
-      // Get all other posts
       const otherPosts = await db.query.posts.findMany({
-        where:
-          followedUserIds.length > 0
-            ? and(
-                not(inArray(posts.authorId, followedUserIds)),
-                not(eq(posts.authorId, userId)), // Don't show user's own posts twice
-              )
-            : not(eq(posts.authorId, userId)), // If not following anyone, just exclude own posts
+        where: not(inArray(posts.authorId, followedUserIds)),
         with: {
           author: true,
           comments: true,
@@ -62,10 +52,8 @@ export async function GET(request: Request) {
         orderBy: [desc(posts.timestamp), desc(posts.id)],
       });
 
-      // Combine the posts, with followed users' posts first
       const allPosts = [...followedPosts, ...otherPosts];
 
-      // Apply pagination if needed
       if (skipParam !== null && limitParam !== null) {
         const skip = parseInt(skipParam, 10);
         const limit = parseInt(limitParam, 10);
@@ -77,7 +65,6 @@ export async function GET(request: Request) {
       return NextResponse.json(allPosts);
     }
 
-    // If no userId, return all posts with normal pagination
     const queryOptions: QueryOptions = {
       with: {
         author: true,
