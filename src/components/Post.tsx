@@ -67,7 +67,7 @@ export const Post = ({ post }: { post: Post }) => {
             src={post.imageUrl}
             alt="post image"
             fill
-            sizes="(max-width: 768px) 100px, 200px"
+            sizes="(max-width: 768px) 300px, 600px"
             style={{ objectFit: "contain" }}
           />
         </div>
