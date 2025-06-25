@@ -69,6 +69,8 @@ export const Post = ({ post }: { post: Post }) => {
             fill
             sizes="(max-width: 768px) 300px, 600px"
             style={{ objectFit: "contain" }}
+            placeholder="blur"
+            blurDataURL="placeholder.jpg"
           />
         </div>
       )}
