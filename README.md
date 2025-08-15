@@ -142,4 +142,4 @@ The application uses the following main tables:
 
 ## License
 
-This project is proprietary and not licensed for public use.
+None
