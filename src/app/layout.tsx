@@ -55,6 +55,11 @@ export default function RootLayout({
           <meta name="msapplication-TileColor" content="#000000" />
           <meta name="msapplication-tap-highlight" content="no" />
           <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+          <Script
+            src="https://umami.stefann.duckdns.org/script.js"
+            data-website-id="7c04e697-dc67-4f84-a8bd-b8f30e1ff125"
+            strategy="afterInteractive"
+          />
         </head>
         <body className="bg-background text-text">
           <ThemeProvider
